@@ -1,9 +1,11 @@
 {
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
-	"defaultTitleFontName": "宋体",
-	"defaultTitleFontSize": 13,
-	"defaultSecTitleFontSize": 11,
+
+	"titleFontName": "宋体",
+	"titleFontSize": 13,
+	"secTitleFontSize": 11,
+	
 	"title": [
 		{
 			"name": "日期",
@@ -29,68 +31,79 @@
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#fe4365",
-			"dayMustCout": true
+			"dayMustCount": true
 		},
 		{
 			"name": "生活用品",
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#fc9d9a",
-			"dayMustCout": true
+			"dayMustCount": true
 		},
 		{
 			"name": "交通",
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#f9cdad",
-			"dayMustCout": true
+			"dayMustCount": true
 		},
 		{
 			"name": "住房",
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#c8c8a9",
-			"dayMustCout": true
+			"dayMustCount": true
 		},
 		{
 			"name": "日必须",
-			"sumDic":"dayMustCout",
+			"rowSumDic": "dayMustCount",
 			"fontColor": "white",
 			"bgColor": "#83af9b",
-			"dayCout": true
+			"dayCount": true
 		},
 		{
 			"name": "娱乐",
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#8a977b",
-			"dayCout": true
+			"dayCount": true
 		},
 		{
 			"name": "购物",
 			"countCell": "合计",
 			"fontColor": "white",
 			"bgColor": "#f4cf00",
-			"dayCout": true
+			"dayCount": true
 		},
 		{
 			"name": "日合计",
-			"sumDic":"dayCout",
+			"rowSumDic": "dayCount",
 			"fontColor": "white",
-			"bgColor": "#dc5712"
+			"bgColor": "#dc5712",
+			"weekCount": true,
+			"MonthCount": true
 		},
 		{
 			"name": "周合计",
 			"fontColor": "white",
-			"bgColor": "#b05574"
+			"bgColor": "#b05574",
+			"colSumDic": "weekCount"
 		},
 		{
 			"name": "月合计",
 			"fontColor": "white",
-			"bgColor": "#dca09e"
+			"bgColor": "#dca09e",
+			"colSumDic": "MonthCount"
 		}
 	],
-	"sumDicKey":["dayMustCout","dayCout"],
+	"rowSumDicKey": [
+		"dayMustCount",
+		"dayCount"
+	],
+	"colSumDicKey": [
+		"weekCount",
+		"MonthCount"
+	],
 	"secondTitle": {
 		"diet": [
 			"早餐",
