@@ -158,12 +158,63 @@ pip install xlsxwriter
 }
 ```
 
+### 配置：二级标题
+
+secondSort：二级菜单种类名，意味着有二级菜单，二级菜单名为value值。在 secondTitle  里寻找与value名一致的数组。
+
+#### 举例：餐饮 
+
+餐饮secondSort值为“diet"（其他英文也可），secondTitle里添加对应的diet数组
+
+```json
+{
+	
+	"title": [
+		{
+			"name": "餐饮",
+			"secondSort": "diet",
+		},
+	],
+	"secondTitle": {
+		"diet": [
+			"早餐",
+			"午餐",
+			"晚餐",
+			"宵夜",
+			"饮食饮料",
+			"外卖"
+		]
+	}
+}
+```
+
+#### 举例：购物
+
+购物secondSort值为“Shopping"，在secondTitle里添加Shopping数组
+
+```json
+{	
+	"title": [
+		{
+			"name": "购物",
+			"secondSort": "Shopping",
+		},
+	],
+	"secondTitle": {
+		"Shopping":[
+			"上衣",
+			"裤子"
+		]
+	}
+}
+```
+
 
 
 ### 配置：行求和
 
 - "rowSumDicKey"-数组：列举所有行求和关键词
-- "rowSumDic"-属性：行求和结果关键字，一般是用来形容该列求和的结果解释
+- "rowSumDic"-属性：行求和结果关键字，一般是用于行求和的结果解释
   对应的关键字做其他列的属性且为true时，表示此列为对应属性行求和时的元素之一。
 
 #### 举例：dayMustCount
@@ -236,7 +287,46 @@ pip install xlsxwriter
 }
 ```
 
+### 配置：列求和
 
+"colSumDicKey"-数组：求和列关键词
+
+colSumDic"-属性：列求和结果关键字，一般是用来形容列求和的结果解释
+​	列关键字做其他列的属性且为true时，表示求和此列。
+
+#### 举例：weekCount、MonthCount
+
+weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求和结果在哪一列。
+
+从配置上看，并没有像行求和那么智能，但是目前也没有这样的需求，所以先这样子咯。
+
+```
+{	
+	"title": [
+		{
+			"name": "日合计",
+			"weekCount": true,
+			"MonthCount": true
+		},
+		{
+			"name": "周合计",
+			"fontColor": "white",
+			"bgColor": "#b05574",
+			"colSumDic": "weekCount"
+		},
+		{
+			"name": "月合计",
+			"fontColor": "white",
+			"bgColor": "#dca09e",
+			"colSumDic": "MonthCount"
+		}
+	],
+	"colSumDicKey": [
+		"weekCount",
+		"MonthCount"
+	],
+}
+```
 
 
 
@@ -247,6 +337,7 @@ pip install xlsxwriter
   - 基本框架
     - [x] 配置列宽行高
     - [x] 列标题
+      - [x] 二级标题
       - [x] 配置 类别
       - [x] 配置 字体样式、字体大小、字体颜色、背景颜色
     - [x] 行日期
@@ -256,11 +347,9 @@ pip install xlsxwriter
     - [x] 合计
       - [x] 限制格式，2位小数的数字
       - [x] 字体样式、字体大小、字体颜色、背景颜色（代码写死/默认，无配置功能）
-
   - 基本逻辑
     - [x] 按日期逐行显示
     - [ ] 一个表格生成全年数据
-
   - 基本功能
     - [x] 行求和（日必须、日合计）
     - [x] 列求和（周合计、月合计）
