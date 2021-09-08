@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "main",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/coutMe.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: 当前文件",
             "type": "python",
             "request": "launch",

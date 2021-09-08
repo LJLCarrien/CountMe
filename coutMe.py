@@ -3,6 +3,7 @@ import calendar
 import json
 import xlsxwriter
 import operator
+import jsonLoader
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 excelSavePath = './test.xlsx'
@@ -315,6 +316,6 @@ def main():
 
     workbook.close()
 
-
 if __name__ == "__main__":
-    main()
+    # main()
+    jsonLoader.getJsonData(jsonFilePath)
