@@ -1,9 +1,10 @@
 from datetime import datetime
 import calendar
 import json
+from xlsHelper import xlsHelper
 import xlsxwriter
 import operator
-import jsonLoader
+import jsonHelper
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 excelSavePath = './test.xlsx'
@@ -246,11 +247,11 @@ def main():
     newWeek = True
     curdayIndex = 0
     montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
-    
-    weekStartLineIndex=0
+
+    weekStartLineIndex = 0
     weekEndLineIndex = 0
 
-    montStartLineIndex=0
+    montStartLineIndex = 0
     montEndLineIndex = 0
 
     lineIndex = lineIndex+1+len(secondTitle)
@@ -316,6 +317,52 @@ def main():
 
     workbook.close()
 
+
+def newMain():
+    jsonInfo = jsonHelper.getJsonData(jsonFilePath)
+    helper = xlsHelper(jsonInfo, excelSavePath)
+    worksheet = helper.get_worksheet(str(c_year))
+    titleList = jsonInfo.getTitleList()
+
+    lineIndex = 0  # 行下标
+    listIndex = 0  # 列下标
+    for titleItem in titleList:
+        if isinstance(titleItem, jsonHelper.TitleItem):
+            value = titleItem.name
+            titleFormat = helper.getNewTitleFormat(titleItem)
+
+            secondMenuList = jsonInfo.getSecTitle(titleItem)
+            isHaveSecTitle = secondMenuList is not None
+            if isHaveSecTitle:
+                oldlistIndex = listIndex
+                secondMenuLen = len(secondMenuList)
+                listIndex = listIndex+secondMenuLen-1
+                # 一级菜单合并-行列行列
+                worksheet.merge_range(
+                    lineIndex, oldlistIndex, lineIndex, listIndex, value, titleFormat)
+                # 二级菜单内容
+                SecTitleFormat = helper.getNewTitleFormat(titleItem, True)
+                for tmpLie in range(secondMenuLen):
+                    worksheet.write(lineIndex+1, oldlistIndex + tmpLie,
+                                    secondMenuList[tmpLie], SecTitleFormat)
+            else:
+                worksheet.merge_range(
+                    lineIndex, listIndex, lineIndex+1, listIndex, value, titleFormat)
+            # 列宽行高
+            titleWidth = jsonInfo.getTitleWidth(titleItem)
+            worksheet.set_column(listIndex, listIndex, titleWidth)
+            titleHeight = jsonInfo.getTitleHeight()
+            worksheet.set_row(lineIndex, titleHeight)
+
+            CountCellValue = jsonInfo.getCountCell(titleItem)
+            isHaveCountCell = CountCellValue is not None
+            if isHaveCountCell:
+                listIndex = listIndex+1
+                countCellList.append(listIndex)
+                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex,
+                                      CountCellValue, titleFormat)
+    helper.close_workbook()
+
 if __name__ == "__main__":
     # main()
-    jsonLoader.getJsonData(jsonFilePath)
+    newMain()
