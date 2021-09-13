@@ -26,7 +26,7 @@ date_format.set_align('center')
 date_format.set_align('vcenter')
 
 weekday_format = workbook.add_format()
-date_format.set_font_name('宋体')
+weekday_format.set_font_name('宋体')
 weekday_format.set_align('left')
 weekday_format.set_align('vcenter')
 
