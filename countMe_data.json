@@ -2,7 +2,7 @@
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
 
-	"titleFontName": "宋体",
+	"defaultFontName": "宋体",
 	"titleFontSize": 13,
 	"secTitleFontSize": 11,
 	

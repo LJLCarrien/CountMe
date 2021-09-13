@@ -9,7 +9,7 @@ class xlsHelper():
         self.workbook = xlsxwriter.Workbook(excelSavePath)
 
     def close_workbook(self):
-        return self.workbook.close
+        return self.workbook.close()
 
     def get_worksheet(self, sheetName: str):
         index = self.workbook._get_sheet_index(sheetName)
@@ -22,7 +22,7 @@ class xlsHelper():
     def getNewTitleFormat(self, itemInfo: TitleItem, isSecTitle=False) -> Format:
         if self.configure is None:
             print('配置数据有误')
-            return
+            return None
         conf = self.configure
 
         format = self.workbook.add_format()
@@ -41,7 +41,7 @@ class xlsHelper():
 
         # fontName
         fontName = ConfigureData.ifNoneInsteadDefault(
-            conf.titleFontName, itemInfo.fontName)
+            conf.defaultFontName, itemInfo.fontName)
         format.set_font_name(fontName)
 
         # fontColor
@@ -54,3 +54,27 @@ class xlsHelper():
             conf.titleBgColor, itemInfo.bgColor)
         format.set_bg_color(bgColor)
         return format
+
+    def getDateFormat(self) -> Format:
+        if self.configure is None:
+            print('配置数据有误')
+            return None
+        date_format = self.workbook.add_format({'num_format': 'm"月"d"日"'})
+        date_format.set_align('center')
+        date_format.set_align('vcenter')
+        # fontName
+        fontName = self.configure.defaultFontName
+        date_format.set_font_name(fontName)
+        return date_format
+
+    def getWeekFormat(self)->Format:
+        if self.configure is None:
+            print('配置数据有误')
+            return None
+        weekday_format = self.workbook.add_format()
+        weekday_format.set_align('left')
+        weekday_format.set_align('vcenter')
+        # fontName
+        fontName = self.configure.defaultFontName
+        weekday_format.set_font_name(fontName)
+        return weekday_format

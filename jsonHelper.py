@@ -1,4 +1,5 @@
 import json
+from warnings import resetwarnings
 
 
 class TitleItem(dict):
@@ -21,7 +22,8 @@ class TitleItem(dict):
 class ConfigureData():
     def __init__(self, jsonFilePath):
         self.filePath = jsonFilePath
-        self.titleFontName = None
+        self.jsonDic = None
+        self.defaultFontName = None
         self.titleFontSize = None
         self.secTitleFontSize = None
         self.titleFontColor = "black"
@@ -50,6 +52,7 @@ class ConfigureData():
             return None
         with open(self.filePath, 'rb')as f:
             jsonDic = json.load(f)
+            self.jsonDic = jsonDic
             if isinstance(jsonDic, dict):
                 for key, value in jsonDic.items():
                     if isinstance(value, list):
@@ -77,6 +80,14 @@ class ConfigureData():
                 return self.secondTitle[key]
         return None
 
+    def getTitleTotalLine(self) -> int:
+        '''获取标题所占行数（包括二级标记在内）'''
+        result = 1
+        secNum = len(self.secondTitle)
+        if secNum >= 1:
+            result = result+1
+        return result
+
     def getTitleWidth(self, itemInfo: TitleItem):
         '''列宽'''
         width = self.defaultTitleWidth
@@ -88,11 +99,36 @@ class ConfigureData():
         '''行高'''
         return self.defaultTitleHeight
 
-    def getCountCell(self, itemInfo: TitleItem):
+    def getCountCellValue(self, itemInfo: TitleItem):
         '''合计'''
         result = hasattr(itemInfo, 'countCell')
         if result:
             return itemInfo.countCell
+        return None
+
+    def getRowSumDicValue(self, itemInfo: TitleItem):
+        '''行求和'''
+        result = hasattr(itemInfo, 'rowSumDic')
+        if result:
+            return itemInfo.rowSumDic
+        return None
+
+    def getRowSumDicKeys(self) -> list:
+        result = 'rowSumDicKey' in self.jsonDic
+        if result:
+            return self.rowSumDicKey
+        return None
+
+    def getColSumDicValue(self, itemInfo: TitleItem):
+        result = hasattr(itemInfo, 'colSumDic')
+        if result:
+            return itemInfo.colSumDic
+        return None
+
+    def getColSumDicKeys(self) -> list:
+        result = 'colSumDicKey' in self.jsonDic
+        if result:
+            return self.colSumDicKey
         return None
 
 

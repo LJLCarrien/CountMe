@@ -5,7 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main",
+            "name": "newCoutMe",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/newCountMe.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "coutMe",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/coutMe.py",
