@@ -1,10 +1,8 @@
 from datetime import datetime
 import calendar
 import json
-from xlsHelper import xlsHelper
 import xlsxwriter
 import operator
-import jsonHelper
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 excelSavePath = './test.xlsx'
@@ -244,6 +242,7 @@ def main():
     maxlistIndex = listIndex-1
 
     # 日期&周目
+    lineIndex = lineIndex+1
     newWeek = True
     curdayIndex = 0
     montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
@@ -254,7 +253,8 @@ def main():
     montStartLineIndex = 0
     montEndLineIndex = 0
 
-    lineIndex = lineIndex+1+len(secondTitle)
+    if len(secondTitle) > 1:
+        lineIndex = lineIndex+1
     for dayItem in obj.itermonthdays4(c_year, c_month):
         if not dayItem[1] == c_month:
             continue
@@ -280,7 +280,8 @@ def main():
                 for lie in countCellList:
                     if tmpLie == lie:
                         # 求和格式
-                        worksheet.write(lineIndex, tmpLie, "",countNumCell_format)
+                        worksheet.write(lineIndex, tmpLie, "",
+                                        countNumCell_format)
                 for needCountLie in rowSumDic[sumItem].itemList:
                     if tmpLie == needCountLie:
                         sumStr = rowCol2Str(lineIndex, tmpLie)
@@ -293,9 +294,11 @@ def main():
         # 周求和
         if cnWeekNumStr == '周日':
             weekEndLineIndex = lineIndex
-            sumStr = getSumStr('weekCount', weekStartLineIndex, weekEndLineIndex)
+            sumStr = getSumStr(
+                'weekCount', weekStartLineIndex, weekEndLineIndex)
             lineIndex = lineIndex+1
-            worksheet.write(lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
+            worksheet.write(
+                lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
             newWeek = True
         #  月求和
         if curdayIndex == montTotoalDayNum:
@@ -303,11 +306,14 @@ def main():
             montEndLineIndex = lineIndex
 
             if cnWeekNumStr != '周日':
-                sumStr = getSumStr('weekCount', weekStartLineIndex, weekEndLineIndex)
+                sumStr = getSumStr(
+                    'weekCount', weekStartLineIndex, weekEndLineIndex)
                 lineIndex = lineIndex+1
-                worksheet.write(lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
+                worksheet.write(
+                    lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
 
-            sumStr = getSumStr('weekCount', montStartLineIndex, montEndLineIndex)
+            sumStr = getSumStr(
+                'weekCount', montStartLineIndex, montEndLineIndex)
             lineIndex = lineIndex+1
             worksheet.write(
                 lineIndex, colSumDic['MonthCount'].resultIndex, sumStr, sum_format)
@@ -318,51 +324,5 @@ def main():
     workbook.close()
 
 
-def newMain():
-    jsonInfo = jsonHelper.getJsonData(jsonFilePath)
-    helper = xlsHelper(jsonInfo, excelSavePath)
-    worksheet = helper.get_worksheet(str(c_year))
-    titleList = jsonInfo.getTitleList()
-
-    lineIndex = 0  # 行下标
-    listIndex = 0  # 列下标
-    for titleItem in titleList:
-        if isinstance(titleItem, jsonHelper.TitleItem):
-            value = titleItem.name
-            titleFormat = helper.getNewTitleFormat(titleItem)
-
-            secondMenuList = jsonInfo.getSecTitle(titleItem)
-            isHaveSecTitle = secondMenuList is not None
-            if isHaveSecTitle:
-                oldlistIndex = listIndex
-                secondMenuLen = len(secondMenuList)
-                listIndex = listIndex+secondMenuLen-1
-                # 一级菜单合并-行列行列
-                worksheet.merge_range(
-                    lineIndex, oldlistIndex, lineIndex, listIndex, value, titleFormat)
-                # 二级菜单内容
-                SecTitleFormat = helper.getNewTitleFormat(titleItem, True)
-                for tmpLie in range(secondMenuLen):
-                    worksheet.write(lineIndex+1, oldlistIndex + tmpLie,
-                                    secondMenuList[tmpLie], SecTitleFormat)
-            else:
-                worksheet.merge_range(
-                    lineIndex, listIndex, lineIndex+1, listIndex, value, titleFormat)
-            # 列宽行高
-            titleWidth = jsonInfo.getTitleWidth(titleItem)
-            worksheet.set_column(listIndex, listIndex, titleWidth)
-            titleHeight = jsonInfo.getTitleHeight()
-            worksheet.set_row(lineIndex, titleHeight)
-
-            CountCellValue = jsonInfo.getCountCell(titleItem)
-            isHaveCountCell = CountCellValue is not None
-            if isHaveCountCell:
-                listIndex = listIndex+1
-                countCellList.append(listIndex)
-                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex,
-                                      CountCellValue, titleFormat)
-    helper.close_workbook()
-
 if __name__ == "__main__":
-    # main()
-    newMain()
+    main()
