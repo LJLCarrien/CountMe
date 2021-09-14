@@ -1,4 +1,3 @@
-from coutMe import colSumDicSetIndex
 from datetime import datetime
 import calendar
 from xlsHelper import xlsHelper
