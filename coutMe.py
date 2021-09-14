@@ -6,7 +6,7 @@ import operator
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 excelSavePath = './test.xlsx'
-jsonFilePath = './countMe_data.json'
+jsonFilePath = './config.json'
 obj = calendar.Calendar()
 
 c_year = datetime.now().year

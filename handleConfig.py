@@ -106,6 +106,14 @@ class ConfigureData():
             return itemInfo.countCell
         return None
 
+    def keyTrueInTitleItem(self, key: str, itemInfo: TitleItem) -> bool:
+        '''属性存在且为true，返回True'''
+        isIn = hasattr(itemInfo, key)
+        if isIn:
+            isTrue = itemInfo.__getattribute__(key)
+            return isIn and isTrue
+        return False
+
     def getRowSumDicValue(self, itemInfo: TitleItem):
         '''行求和'''
         result = hasattr(itemInfo, 'rowSumDic')
@@ -120,6 +128,7 @@ class ConfigureData():
         return None
 
     def getColSumDicValue(self, itemInfo: TitleItem):
+        '''列求和'''
         result = hasattr(itemInfo, 'colSumDic')
         if result:
             return itemInfo.colSumDic
@@ -130,6 +139,14 @@ class ConfigureData():
         if result:
             return self.colSumDicKey
         return None
+
+    def getWeekCountKey(self) -> str:
+        '''周合计'''
+        return "weekCount"
+
+    def getMonthCountKey(self) -> str:
+        '''月合计'''
+        return "monthCount"
 
 
 def getJsonData(jsonFilePath) -> ConfigureData:
