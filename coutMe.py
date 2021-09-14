@@ -165,7 +165,7 @@ def main():
 
         jsonData = json.load(f)
         titleFontSize = jsonData['titleFontSize']
-        titleFontName = jsonData['titleFontName']
+        defaultFontName = jsonData['defaultFontName']
         secTitleFontSize = jsonData['secTitleFontSize']
         secondTitle = jsonData['secondTitle']
         titleInfo = jsonData['title']
@@ -178,29 +178,23 @@ def main():
             value = titleItem['name']
             bHaveSecMenu = 'secondSort' in titleItem
 
-            tmp_title_format = getNewTitleFormat(
-                titleItem, titleFontSize, titleFontName)
+            tmp_title_format = getNewTitleFormat(titleItem, titleFontSize, defaultFontName)
 
             # 含二级菜单
             if bHaveSecMenu:
-                tmp_Sec_title_format = getNewTitleFormat(
-                    titleItem, secTitleFontSize, titleFontName)
+                tmp_Sec_title_format = getNewTitleFormat(titleItem, secTitleFontSize, defaultFontName)
 
                 oldlistIndex = listIndex
                 secondMenuList = secondTitle[titleItem['secondSort']]
                 secondMenuLen = len(secondMenuList)
                 listIndex = listIndex+secondMenuLen-1
                 # 一级菜单合并-行列行列
-                worksheet.merge_range(
-                    lineIndex, oldlistIndex, lineIndex, listIndex, value, tmp_title_format)
+                worksheet.merge_range(lineIndex, oldlistIndex, lineIndex, listIndex, value, tmp_title_format)
                 # 二级菜单内容
                 for tmpLie in range(secondMenuLen):
-                    worksheet.write(lineIndex+1, oldlistIndex + tmpLie,
-                                    secondMenuList[tmpLie], tmp_Sec_title_format)
+                    worksheet.write(lineIndex+1, oldlistIndex + tmpLie, secondMenuList[tmpLie], tmp_Sec_title_format)
             else:
-                # worksheet.write(lineIndex, listIndex, value, tmp_title_format)
-                worksheet.merge_range(
-                    lineIndex, listIndex, lineIndex+1, listIndex, value, tmp_title_format)
+                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex, value, tmp_title_format)
 
             # 列宽
             colWidth = jsonData['defaultTitleWidth']
@@ -215,8 +209,7 @@ def main():
             if 'countCell' in titleItem:
                 listIndex = listIndex+1
                 countCellList.append(listIndex)
-                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex,
-                                      titleItem['countCell'], tmp_title_format)
+                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex, titleItem['countCell'], tmp_title_format)
             '''
             行求和
             '''
@@ -253,7 +246,7 @@ def main():
     montStartLineIndex = 0
     montEndLineIndex = 0
 
-    if len(secondTitle) > 1:
+    if len(secondTitle) >= 1:
         lineIndex = lineIndex+1
     for dayItem in obj.itermonthdays4(c_year, c_month):
         if not dayItem[1] == c_month:
@@ -279,26 +272,22 @@ def main():
             for tmpLie in range(maxlistIndex):
                 for lie in countCellList:
                     if tmpLie == lie:
-                        # 求和格式
-                        worksheet.write(lineIndex, tmpLie, "",
-                                        countNumCell_format)
+                        # 合计内容格式
+                        worksheet.write(lineIndex, tmpLie, "", countNumCell_format)
                 for needCountLie in rowSumDic[sumItem].itemList:
                     if tmpLie == needCountLie:
                         sumStr = rowCol2Str(lineIndex, tmpLie)
                         sumItemList.append(sumStr)
             sumStr = ",".join(sumItemList)
             sumStr = "=SUM(%s)" % sumStr
-            worksheet.write(
-                lineIndex, rowSumDic[sumItem].index, sumStr, sum_format)
+            worksheet.write(lineIndex, rowSumDic[sumItem].index, sumStr, sum_format)
 
         # 周求和
         if cnWeekNumStr == '周日':
             weekEndLineIndex = lineIndex
-            sumStr = getSumStr(
-                'weekCount', weekStartLineIndex, weekEndLineIndex)
+            sumStr = getSumStr('weekCount', weekStartLineIndex, weekEndLineIndex)
             lineIndex = lineIndex+1
-            worksheet.write(
-                lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
+            worksheet.write(lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
             newWeek = True
         #  月求和
         if curdayIndex == montTotoalDayNum:
@@ -306,17 +295,13 @@ def main():
             montEndLineIndex = lineIndex
 
             if cnWeekNumStr != '周日':
-                sumStr = getSumStr(
-                    'weekCount', weekStartLineIndex, weekEndLineIndex)
+                sumStr = getSumStr('weekCount', weekStartLineIndex, weekEndLineIndex)
                 lineIndex = lineIndex+1
-                worksheet.write(
-                    lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
+                worksheet.write(lineIndex, colSumDic['weekCount'].resultIndex, sumStr, sum_format)
 
-            sumStr = getSumStr(
-                'weekCount', montStartLineIndex, montEndLineIndex)
+            sumStr = getSumStr('monthCount', montStartLineIndex, montEndLineIndex)
             lineIndex = lineIndex+1
-            worksheet.write(
-                lineIndex, colSumDic['MonthCount'].resultIndex, sumStr, sum_format)
+            worksheet.write(lineIndex, colSumDic['monthCount'].resultIndex, sumStr, sum_format)
             newWeek = True
         worksheet.set_row(lineIndex, defaultTitleHeight)
         lineIndex = lineIndex+1
