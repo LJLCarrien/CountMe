@@ -4,6 +4,7 @@ from handleConfig import ConfigureData, TitleItem
 
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 
+
 class xlsHelper():
     def __init__(self, configure: ConfigureData, excelSavePath: str):
         # 英文简称获取：calendar.day_abbr
@@ -115,3 +116,14 @@ class xlsHelper():
         sumResult_format.set_font_name('宋体')
         sumResult_format.set_font_color('red')
         return sumResult_format
+
+    def getMonthEndFormat(self) -> Format:
+        monthEnd_format = self.workbook.add_format()
+        monthEnd_format.set_bold()
+        monthEnd_format.set_align('center')
+        monthEnd_format.set_align('vcenter')
+        monthEnd_format.set_font_size(16)
+        monthEnd_format.set_font_name('宋体')
+        monthEnd_format.set_bg_color('#dca09e')
+        monthEnd_format.set_font_color('#a12f2f')
+        return monthEnd_format

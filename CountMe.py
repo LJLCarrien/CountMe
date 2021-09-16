@@ -8,7 +8,7 @@ excelSavePath = './test.xlsx'
 obj = calendar.Calendar()
 
 c_year = datetime.now().year
-c_month = 9
+max_month = 12
 
 rowSumDic = {}
 colSumDic = {}
@@ -189,89 +189,97 @@ def main():
         maxlistIndex = listIndex-1
 
     # 日期&周目
-    newWeek = True
-    curdayIndex = 0
-    montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
-    weekStartLineIndex = weekEndLineIndex = 0
-    montStartLineIndex = montEndLineIndex = 0
-    lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
-    for dayItem in obj.itermonthdays4(c_year, c_month):
-        if not dayItem[1] == c_month:
-            continue
-        if curdayIndex == 0:
-            montStartLineIndex = lineIndex
-        if newWeek:
-            weekStartLineIndex = lineIndex
-            newWeek = False
-        # 日期：年月日，显示格式:x月x日
-        yearMontDay = "%d-%d-%d" % (c_year, dayItem[1], dayItem[2])
-        date = datetime.strptime(yearMontDay, "%Y-%m-%d")
-        date_format = helper.getDateFormat()
-        worksheet.write_datetime(lineIndex, 0, date, date_format)
+    countNumCell_format = helper.getCountNumFormat()
+    sum_format = helper.getSumResultFormat()
+    monthEnd_format = helper.getMonthEndFormat()
 
-        # 周数
-        cnWeekNumStr = xlsHelper.getWeekDayCnNameByIndex(dayItem[3])
-        weekday_format = helper.getWeekFormat()
-        worksheet.write(lineIndex, 1, cnWeekNumStr, weekday_format)
-        curdayIndex = curdayIndex+1
+    for c_month in range(max_month):
+        c_month = c_month+1
+        newWeek = True
+        curdayIndex = 0
+        montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
+        weekStartLineIndex = weekEndLineIndex = 0
+        montStartLineIndex = montEndLineIndex = 0
+        if c_month == 1:
+            lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
+        for dayItem in obj.itermonthdays4(c_year, c_month):
+            if not dayItem[1] == c_month:
+                continue
+            if curdayIndex == 0:
+                montStartLineIndex = lineIndex
+            if newWeek:
+                weekStartLineIndex = lineIndex
+                newWeek = False
+            # 日期：年月日，显示格式:x月x日
+            yearMontDay = "%d-%d-%d" % (c_year, dayItem[1], dayItem[2])
+            date = datetime.strptime(yearMontDay, "%Y-%m-%d")
+            date_format = helper.getDateFormat()
+            worksheet.write_datetime(lineIndex, 0, date, date_format)
 
-        # 行求和
-        for sumItem in rowSumDic.keys():
-            sumItemList = []
-            for tmpLie in range(maxlistIndex):
-                for lie in countCellList:
-                    if tmpLie == lie:
-                        # 合计列内容
-                        countNumCell_format = helper.getCountNumFormat()
-                        worksheet.write(lineIndex, tmpLie, "",
-                                        countNumCell_format)
-                tmpList = rowSumDic[sumItem]
-                if isinstance(tmpList, RowSumResult):
-                    for needCountLie in tmpList.itemList:
-                        if tmpLie == needCountLie:
-                            sumStr = xlsHelper.rowCol2Str(lineIndex, tmpLie)
-                            sumItemList.append(sumStr)
-            # 行求和内容
-            sumStr = ",".join(sumItemList)
-            sumStr = "=SUM(%s)" % sumStr
-            sum_format = helper.getSumResultFormat()
-            result = rowSumDic[sumItem]
-            if isinstance(result, RowSumResult):
-                worksheet.write(lineIndex, result.index, sumStr, sum_format)
+            # 周数
+            cnWeekNumStr = xlsHelper.getWeekDayCnNameByIndex(dayItem[3])
+            weekday_format = helper.getWeekFormat()
+            worksheet.write(lineIndex, 1, cnWeekNumStr, weekday_format)
+            curdayIndex = curdayIndex+1
 
-        # 周求和
-        weekCountKey = jsonInfo.getWeekCountKey()
-        if cnWeekNumStr == '周日':
-            weekEndLineIndex = lineIndex
-            sumStr = getSumStr(weekCountKey, weekStartLineIndex, weekEndLineIndex)
-            lineIndex = lineIndex+1
-            result = colSumDic[weekCountKey]
-            if isinstance(result, ColSumResult):
-                worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
-            newWeek = True
-        #  月求和
-        if curdayIndex == montTotoalDayNum:
-            weekEndLineIndex = lineIndex
-            montEndLineIndex = lineIndex
+            # 行求和
+            for sumItem in rowSumDic.keys():
+                sumItemList = []
+                for tmpLie in range(maxlistIndex):
+                    for lie in countCellList:
+                        if tmpLie == lie:
+                            # 合计列内容
+                            worksheet.write(lineIndex, tmpLie, "",
+                                            countNumCell_format)
+                    tmpList = rowSumDic[sumItem]
+                    if isinstance(tmpList, RowSumResult):
+                        for needCountLie in tmpList.itemList:
+                            if tmpLie == needCountLie:
+                                sumStr = xlsHelper.rowCol2Str(lineIndex, tmpLie)
+                                sumItemList.append(sumStr)
+                # 行求和内容
+                sumStr = ",".join(sumItemList)
+                sumStr = "=SUM(%s)" % sumStr
+                result = rowSumDic[sumItem]
+                if isinstance(result, RowSumResult):
+                    worksheet.write(lineIndex, result.index, sumStr, sum_format)
 
-            if cnWeekNumStr != '周日':
+            # 周求和
+            weekCountKey = jsonInfo.getWeekCountKey()
+            if cnWeekNumStr == '周日':
+                weekEndLineIndex = lineIndex
                 sumStr = getSumStr(weekCountKey, weekStartLineIndex, weekEndLineIndex)
+                lineIndex = lineIndex+1
                 result = colSumDic[weekCountKey]
                 if isinstance(result, ColSumResult):
-                    lineIndex = lineIndex+1
                     worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
+                newWeek = True
+            #  月求和
+            if curdayIndex == montTotoalDayNum:
+                weekEndLineIndex = lineIndex
+                montEndLineIndex = lineIndex
 
-            monthCountKey = jsonInfo.getMonthCountKey()
-            sumStr = getSumStr(monthCountKey, montStartLineIndex, montEndLineIndex)
-            result = colSumDic[monthCountKey]
-            if isinstance(result, ColSumResult):
-                lineIndex = lineIndex+1
-                worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
-            newWeek = True
-        # 行高
-        defaultTitleHeight = jsonInfo.getTitleHeight()
-        worksheet.set_row(lineIndex, defaultTitleHeight)
-        lineIndex = lineIndex+1
+                if cnWeekNumStr != '周日':
+                    sumStr = getSumStr(weekCountKey, weekStartLineIndex, weekEndLineIndex)
+                    result = colSumDic[weekCountKey]
+                    if isinstance(result, ColSumResult):
+                        lineIndex = lineIndex+1
+                        worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
+
+                monthCountKey = jsonInfo.getMonthCountKey()
+                sumStr = getSumStr(monthCountKey, montStartLineIndex, montEndLineIndex)
+                result = colSumDic[monthCountKey]
+                if isinstance(result, ColSumResult):
+                    lineIndex = lineIndex+1
+                    for tmpCol in range(maxlistIndex):
+                        if tmpCol < maxlistIndex:
+                            worksheet.write(lineIndex, tmpCol, "", monthEnd_format)
+                    worksheet.write(lineIndex, result.resultIndex, sumStr, monthEnd_format)
+                newWeek = True
+            # 行高
+            defaultTitleHeight = jsonInfo.getTitleHeight()
+            worksheet.set_row(lineIndex, defaultTitleHeight)
+            lineIndex = lineIndex+1
 
     helper.close_workbook()
 
