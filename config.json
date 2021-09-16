@@ -1,11 +1,48 @@
 {
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
+	
+	"defaultFontSize": 11,
+	"defaultBold": false,
 
 	"defaultFontName": "宋体",
-	"titleFontSize": 13,
-	"secTitleFontSize": 11,
-	
+	"defaultHorAlignment": "center",
+	"defaultVerAlignment": "vcenter",
+	"defaultFontColor": null,
+	"defaultBgColor": null,
+	"format": {
+		"title": {
+			"fontSize": 13,
+			"bold": true
+		},
+		"secTitle":{
+			"fontSize": 11,
+			"bold": true
+		},
+		"date": {
+			"numFormat": "m\"月\"d\"日\"",
+			"verAlignment": "vcenter"
+		},
+		"weekDay": {
+			"horAlignment": "left",
+			"verAlignment": "vcenter"
+		},
+		"countNumCell": {
+			"numFormat": "0.00",
+			"fontColor": "red"
+		},
+		"sumResult": {
+			"bold": true,
+			"fontSize": 16,
+			"fontColor": "red"
+		},
+		"monthEnd": {
+			"bold": true,
+			"fontSize": 16,
+			"fontColor": "#a12f2f",
+			"bgColor": "#dca09e"
+		}
+	},
 	"title": [
 		{
 			"name": "日期",
