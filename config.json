@@ -2,12 +2,11 @@
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
 	
-	"defaultFontSize": 11,
 	"defaultBold": false,
-
-	"defaultFontName": "宋体",
 	"defaultHorAlignment": "center",
 	"defaultVerAlignment": "vcenter",
+	"defaultFontSize": 11,
+	"defaultFontName": "宋体",
 	"defaultFontColor": null,
 	"defaultBgColor": null,
 	"format": {
