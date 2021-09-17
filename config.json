@@ -11,16 +11,17 @@
 	"defaultBgColor": null,
 	"format": {
 		"title": {
-			"fontSize": 13,
+			"fontSize": 12,
+			"fontName":"微软雅黑",
 			"bold": true
 		},
 		"secTitle":{
-			"fontSize": 11,
+			"fontName":"微软雅黑",
+			"fontSize": 10,
 			"bold": true
 		},
 		"date": {
-			"numFormat": "m\"月\"d\"日\"",
-			"verAlignment": "vcenter"
+			"numFormat": "m\"月\"d\"日\""
 		},
 		"weekDay": {
 			"horAlignment": "left",
@@ -54,12 +55,14 @@
 		{
 			"name": "ToDo",
 			"width": 20,
-			"fontColor": "red"
+			"fontColor": "red",
+			"fontName":"方正姚体"
 		},
 		{
 			"name": "HaveDone",
 			"width": 20,
-			"fontColor": "red"
+			"fontColor": "red",
+			"fontName":"方正姚体"
 		},
 		{
 			"name": "餐饮",
