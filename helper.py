@@ -176,18 +176,7 @@ class TitleItem(dict):
     def __init__(self):
         self.reset()
 
-    def getTitleFormatItemByType(self, confDic: dict, type: TitleType) -> FormatItem:
-        '''获取标题的默认格式'''
-        if type == TitleType.MAIN:
-            fItem = FormatItem(confDic, confDic['format']['title'])
-        elif type == TitleType.SEC:
-            fItem = FormatItem(confDic, confDic['format']['secTitle'])
-        return fItem
-
     def setData(self, confDic: dict, info: dict):
-        # 默认格式
-        fItem = self.getTitleFormatItemByType(confDic, TitleType.MAIN)
-        self.formatItem = fItem
         # 定制格式
         for key, value in info.items():
             self.__dict__[key] = value
@@ -195,6 +184,29 @@ class TitleItem(dict):
             #     print("TitleItem 格式属性：%s未支持" % key)
         self.setSecList(confDic)
         self.setTitleWidth(confDic)
+
+    def getTitleDefaultFormatByType(self, confDic: dict, type: TitleType) -> FormatItem:
+        '''获取标题的默认格式'''
+        if type == TitleType.MAIN:
+            fItem = FormatItem(confDic, confDic['format']['title'])
+        elif type == TitleType.SEC:
+            fItem = FormatItem(confDic, confDic['format']['secTitle'])
+        return fItem
+
+    def getFormat(self, workbook: xlsxwriter.Workbook, confDic: dict, type: TitleType = TitleType.MAIN) -> Format:
+        # 默认格式
+        fItem = self.getTitleDefaultFormatByType(confDic, type)
+        self.formatItem = fItem
+        format = self.formatItem.getFormat(workbook)
+        if self.fontName is not None:
+            format.set_font_name(self.fontName)
+        if self.fontSize is not None:
+            format.set_font_size(self.fontSize)
+        if self.fontColor is not None:
+            format.set_font_color(self.fontColor)
+        if self.bgColor is not None:
+            format.set_bg_color(self.bgColor)
+        return format
 
     def setSecList(self, confDic: dict):
         '''获取一级菜单对应的二级菜单列表'''
@@ -246,20 +258,6 @@ class TitleItem(dict):
             return isIn and isTrue
         return False
 
-    def getFormat(self, workbook: xlsxwriter.Workbook) -> Format:
-        if self.formatItem is None:
-            return None
-        format = self.formatItem.getFormat(workbook)
-        if self.fontName is not None:
-            format.set_font_name(self.fontName)
-        if self.fontSize is not None:
-            format.set_font_size(self.fontSize)
-        if self.fontColor is not None:
-            format.set_font_color(self.fontColor)
-        if self.bgColor is not None:
-            format.set_bg_color(self.bgColor)
-        return format
-
 
 class XlsHelper():
     def __init__(self, configure: ConfigureData, excelSavePath: str):
@@ -293,14 +291,13 @@ class XlsHelper():
             self.worksheet = self.workbook.get_worksheet_by_name(sheetName)
         return self.worksheet
 
-    def getNewTitleFormat(self, itemInfo: TitleItem, isSecTitle: bool = False) -> Format:
+    def getTitleFormat(self, itemInfo: TitleItem, isSecTitle: bool = False) -> Format:
         '''行标题格式'''
         workbook = self.workbook
+        type = TitleType.MAIN
         if isSecTitle:
-            formatitem = TitleItem.getTitleFormatItemByType(self.configure.jsonDic, TitleType.SEC)
-            format = formatitem.getFormat(workbook)
-        else:
-            format = itemInfo.getFormat(workbook)
+            type = TitleType.SEC
+        format = itemInfo.getFormat(workbook, self.configure.jsonDic, type)
         return format
 
     def getFormat(self, name: str) -> Format:

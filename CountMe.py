@@ -129,7 +129,7 @@ def main():
     for titleItem in titleList:
         if isinstance(titleItem, TitleItem):
             value = titleItem.name
-            titleFormat = helper.getNewTitleFormat(titleItem)
+            titleFormat = helper.getTitleFormat(titleItem)
 
             secondMenuList = titleItem.getSecList()
             isHaveSecTitle = secondMenuList is not None
@@ -140,7 +140,7 @@ def main():
                 # 一级菜单合并-行列行列
                 worksheet.merge_range(lineIndex, oldlistIndex, lineIndex, listIndex, value, titleFormat)
                 # 二级菜单内容
-                SecTitleFormat = helper.getNewTitleFormat(titleItem, True)
+                SecTitleFormat = helper.getTitleFormat(titleItem, True)
                 for tmpLie in range(secondMenuLen):
                     worksheet.write(lineIndex+1, oldlistIndex + tmpLie, secondMenuList[tmpLie], SecTitleFormat)
             else:
