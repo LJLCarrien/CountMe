@@ -299,13 +299,13 @@ pip install xlsxwriter
 
 #### 字体颜色
 
-##### 	全局默认：defaultFontColor
+##### 		全局默认：defaultFontColor
 
 ​		默认null时是黑色
 
-##### 	局部默认：fontColor
+##### 		局部默认：fontColor
 
-##### 		一级标题：fontColor
+##### 			一级标题：fontColor
 
 ```json
 {
@@ -335,13 +335,13 @@ pip install xlsxwriter
 
 #### 背景颜色
 
-##### 	全局默认：defaultBgColor
+##### 		全局默认：defaultBgColor
 
 ​		默认null时是黑色
 
-##### 	局部默认：bgColor
+##### 		局部默认：bgColor
 
-##### 		一级标题：bgColor
+##### 			一级标题：bgColor
 
 ```json
 {
@@ -364,13 +364,13 @@ pip install xlsxwriter
 
 ### 合计
 
-针对列标题增加列，专门用于数字统计
+​	针对列标题增加列，专门用于数字统计
 
-##### 全局默认：暂无需求，不支持
+#### 全局默认：暂无需求，不支持
 
-##### 局部默认：暂无需求，不支持
+#### 局部默认：暂无需求，不支持
 
-##### 一级标题：fontColor
+#### 一级标题：fontColor
 
 ```
 {
@@ -390,6 +390,50 @@ pip install xlsxwriter
 		{
 			"name": "住房",
 			"countCell": "合计",
+		}
+	]
+}
+```
+
+### 表格冻结
+
+​	功能参考：[freeze_panes](https://xlsxwriter.readthedocs.io/worksheet.html?highlight=freeze#freeze_panes)
+
+#### 一级标题：freeze
+
+​	默认标题完整显示（即上固定区域和下滚动区域**不支持**配置），**仅支持**配置冻结列位置，即可以影响左固定区域和右滚动区域
+
+​	"freeze":false 时不冻结表格；出现多个"freeze":true，以最后一个为准，因此不建议标题列处出现多个freeze。
+
+##### **举例：单个freeze**
+
+​	指定Todo列为右滚动区域第一列
+
+```
+{
+	"title": [
+		{
+			"name": "ToDo",
+			"freeze":true
+		}
+	]
+}
+```
+
+##### **举例：多个freeze**
+
+​	指定Todo和HaveDone时，结果为HaveDone
+
+```
+{
+	"title": [
+		{
+			"name": "ToDo",
+			"freeze":true
+		},
+		{
+			"name": "HaveDone",
+			"freeze":true
 		}
 	]
 }
@@ -703,7 +747,9 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 - #### 增加功能
   
   - [x] 支持配置excel文件名
-  - [ ] 冻结表格指定行列功能，需要支持配置
+  - [ ] 冻结表格，需要支持配置
+    - [x] 指定列功能
+    - [ ] 指定行功能（默认；根据当前月份；指定月份；指定行数）
   
 - #### 代码优化
 

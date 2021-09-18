@@ -4,11 +4,13 @@ import xlsxwriter
 from xlsxwriter.format import Format
 from formatItem import FormatItem
 
+
 class TitleType(Enum):
     '''主标题'''
     MAIN = 0
     '''二级标题'''
     SEC = 1
+
 
 class TitleItem(dict):
     def reset(self):
@@ -30,9 +32,9 @@ class TitleItem(dict):
     def setData(self, confDic: dict, info: dict):
         # 定制格式
         for key, value in info.items():
-            if key=='formatItem':
+            if key == 'formatItem':
                 print("%s 为 TitleItem 保留默认格式属性字段,不支持在 title 配置" % key)
-            elif key=='secList':
+            elif key == 'secList':
                 print("%s 为 TitleItem 保留默认格式属性字段,不支持在 secList 配置" % key)
             else:
                 self.__dict__[key] = value
@@ -105,6 +107,13 @@ class TitleItem(dict):
         if result:
             return self.colSumDic
         return None
+
+    def isFreeze(self):
+        '''冻结'''
+        result = hasattr(self, 'freeze')
+        if result:
+            return self.freeze
+        return False
 
     def keyTrueInTitleItem(self, key: str) -> bool:
         '''属性存在且为true，返回True'''

@@ -118,7 +118,7 @@ def getSumStr(key, startIndex, endIndex):
 
 
 def main():
-    excelSavePath=jsonInfo.getExcelPath()
+    excelSavePath = jsonInfo.getExcelPath()
     helper = XlsHelper(jsonInfo, excelSavePath)
     worksheet = helper.get_worksheet(str(c_year))
     titleList = jsonInfo.getTitleList()
@@ -127,6 +127,8 @@ def main():
 
     lineIndex = 0  # 行下标
     listIndex = 0  # 列下标
+    breezeListIndex = -1  # 冻结列下标
+
     for titleItem in titleList:
         if isinstance(titleItem, TitleItem):
             value = titleItem.name
@@ -152,6 +154,10 @@ def main():
             titleHeight = jsonInfo.getTitleHeight()
             worksheet.set_row(lineIndex, titleHeight)
 
+            # 冻结
+            bFreeze = titleItem.isFreeze()
+            if bFreeze:
+                breezeListIndex = listIndex
             # 合计
             countCellValue = titleItem.getCountCellValue()
             isHaveCountCell = countCellValue is not None
@@ -193,6 +199,11 @@ def main():
     sum_format = helper.getSumResultFormat()
     monthEnd_format = helper.getMonthEndFormat()
 
+    lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
+    # 冻结
+    if breezeListIndex != -1:
+        worksheet.freeze_panes(lineIndex, breezeListIndex, lineIndex, 0)
+
     for c_month in range(max_month):
         c_month = c_month+1
         newWeek = True
@@ -200,8 +211,6 @@ def main():
         montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
         weekStartLineIndex = weekEndLineIndex = 0
         montStartLineIndex = montEndLineIndex = 0
-        if c_month == 1:
-            lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
         for dayItem in obj.itermonthdays4(c_year, c_month):
             if not dayItem[1] == c_month:
                 continue

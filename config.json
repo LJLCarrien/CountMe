@@ -57,7 +57,8 @@
 			"name": "ToDo",
 			"width": 20,
 			"fontColor": "red",
-			"fontName":"方正姚体"
+			"fontName":"方正姚体",
+			"freeze":true
 		},
 		{
 			"name": "HaveDone",
