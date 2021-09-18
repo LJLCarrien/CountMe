@@ -4,7 +4,6 @@ from titleItem import TitleItem
 from helper import XlsHelper, getJsonData
 import operator
 
-excelSavePath = './test.xlsx'
 obj = calendar.Calendar()
 
 c_year = datetime.now().year
@@ -119,6 +118,7 @@ def getSumStr(key, startIndex, endIndex):
 
 
 def main():
+    excelSavePath=jsonInfo.getExcelPath()
     helper = XlsHelper(jsonInfo, excelSavePath)
     worksheet = helper.get_worksheet(str(c_year))
     titleList = jsonInfo.getTitleList()

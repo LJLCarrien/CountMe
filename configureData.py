@@ -96,3 +96,10 @@ class ConfigureData():
         if result:
             return self.format
         return None
+    
+    def getExcelPath(self)->str:
+        '''获取保存'''
+        result = 'excelPath' in self.jsonDic
+        if result:
+            return self.excelPath
+        return None
