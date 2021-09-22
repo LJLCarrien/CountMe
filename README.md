@@ -399,13 +399,15 @@ pip install xlsxwriter
 
 ​	功能参考：[freeze_panes](https://xlsxwriter.readthedocs.io/worksheet.html?highlight=freeze#freeze_panes)
 
-#### 一级标题：freeze
+#### 指定冻结列位置
+
+##### 一级标题：freeze
 
 ​	默认标题完整显示（即上固定区域和下滚动区域**不支持**配置），**仅支持**配置冻结列位置，即可以影响左固定区域和右滚动区域
 
 ​	"freeze":false 时不冻结表格；出现多个"freeze":true，以最后一个为准，因此不建议标题列处出现多个freeze。
 
-##### **举例：单个freeze**
+###### 	**举例：单个freeze**
 
 ​	指定Todo列为右滚动区域第一列
 
@@ -420,7 +422,7 @@ pip install xlsxwriter
 }
 ```
 
-##### **举例：多个freeze**
+###### 	**举例：多个freeze**
 
 ​	指定Todo和HaveDone时，结果为HaveDone
 
@@ -436,6 +438,40 @@ pip install xlsxwriter
 			"freeze":true
 		}
 	]
+}
+```
+
+
+
+#### 指定滚动行
+
+用于表格冻结后，右滚动区域显示的首行
+
+以下两个例子效果一致
+
+##### 	举例：指定月份模式
+
+​	右滚动区域显示指定月份为首行
+
+```json
+{
+	"freezeLineMode":{
+		"type":"month",
+		"detail":"1"
+	}
+}
+```
+
+##### 	举例：指定行模式
+
+​	右滚动区域显示指定表格行数为首行
+
+```
+{
+	"freezeLineMode":{
+		"type":"line",
+		"detail":"10"
+	}
 }
 ```
 
@@ -747,9 +783,9 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 - #### 增加功能
   
   - [x] 支持配置excel文件名
-  - [ ] 冻结表格，需要支持配置
+  - [x] 冻结表格，需要支持配置
     - [x] 指定列功能
-    - [ ] 指定行功能（默认；根据当前月份；指定月份；指定行数）
+    - [x] 指定滚动行功能（指定月份；指定行数）
   
 - #### 代码优化
 

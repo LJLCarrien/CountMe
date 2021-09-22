@@ -200,10 +200,12 @@ def main():
     monthEnd_format = helper.getMonthEndFormat()
 
     lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
-    # 冻结
+    firstShowDayLine = lineIndex
+    # 按月/行冻结
+    freezeDetail = jsonInfo.getFreezeLineDetail()
+    # 默认冻结
     if breezeListIndex != -1:
-        worksheet.freeze_panes(lineIndex, breezeListIndex, lineIndex, 0)
-
+        worksheet.freeze_panes(firstShowDayLine, breezeListIndex, firstShowDayLine, 0)
     for c_month in range(max_month):
         c_month = c_month+1
         newWeek = True
@@ -211,6 +213,9 @@ def main():
         montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
         weekStartLineIndex = weekEndLineIndex = 0
         montStartLineIndex = montEndLineIndex = 0
+        # 按月冻结行
+        if breezeListIndex != -1 and int(freezeDetail) == c_month and jsonInfo.IsFreezeMonth():
+            worksheet.freeze_panes(firstShowDayLine, breezeListIndex, lineIndex, 0)
         for dayItem in obj.itermonthdays4(c_year, c_month):
             if not dayItem[1] == c_month:
                 continue
@@ -219,6 +224,9 @@ def main():
             if newWeek:
                 weekStartLineIndex = lineIndex
                 newWeek = False
+            # 按指定行冻结行
+            if breezeListIndex != -1 and int(freezeDetail)-1 == lineIndex and jsonInfo.IsFreezeLine():
+                worksheet.freeze_panes(firstShowDayLine, breezeListIndex, lineIndex, 0)
             # 日期：年月日，显示格式:x月x日
             yearMontDay = "%d-%d-%d" % (c_year, dayItem[1], dayItem[2])
             date = datetime.strptime(yearMontDay, "%Y-%m-%d")

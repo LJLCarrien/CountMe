@@ -1,6 +1,7 @@
 import json
 from titleItem import TitleItem
 
+
 class ConfigureData():
     def __init__(self, jsonFilePath):
         self.filePath = jsonFilePath
@@ -96,10 +97,22 @@ class ConfigureData():
         if result:
             return self.format
         return None
-    
-    def getExcelPath(self)->str:
+
+    def getExcelPath(self) -> str:
         '''获取保存'''
         result = 'excelPath' in self.jsonDic
         if result:
             return self.excelPath
         return None
+
+    def IsFreezeMonth(self) -> bool:
+        '''冻结行模式是月份'''
+        return self.freezeLineMode['type'] == 'month'
+
+    def IsFreezeLine(self) -> bool:
+        '''冻结行模式是行数'''
+        return self.freezeLineMode['type'] == 'line'
+
+    def getFreezeLineDetail(self) -> str:
+        '''冻结行模式具体内容，月份时是1-12，行数是2到正无穷'''
+        return self.freezeLineMode['detail']

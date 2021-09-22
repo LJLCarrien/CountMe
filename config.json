@@ -2,7 +2,12 @@
 	"excelPath":"./消费.xlsx",
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
-	
+
+	"freezeLineMode":{
+		"type":"month",
+		"detail":"1"
+	},
+
 	"defaultBold": false,
 	"defaultHorAlignment": "center",
 	"defaultVerAlignment": "vcenter",
