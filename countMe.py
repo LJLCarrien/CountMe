@@ -1,7 +1,10 @@
+"""统计人生"""
 from datetime import datetime
 import calendar
+from sum_colsum import ColSumResult
+from sum_rowsum import RowSumResult
 from titleItem import TitleItem
-from helper import XlsHelper, getJsonData
+from helper import XlsHelper, get_jsondata
 import operator
 
 obj = calendar.Calendar()
@@ -9,297 +12,259 @@ obj = calendar.Calendar()
 c_year = datetime.now().year
 max_month = 12
 
-rowSumDic = {}
-colSumDic = {}
+rowsum_dic = {}
+colsum_dic = {}
 # 合计列下标数组
-countCellList = []
+countcell_list = []
 
-jsonFilePath = './config.json'
-jsonInfo = getJsonData(jsonFilePath)
-
-
-class RowSumResult(object):
-    def __init__(self):
-        # 求和结果-列下标
-        self.index = -1
-        # 用于求和-列下标
-        self.itemList = []
-
-    def setIndex(self, i):
-        '''求和结果-列下标'''
-        self.index = i
-
-    def setList(self, list):
-        self.itemList = list
-
-    def addListItem(self, item):
-        '''求和元素-列下标'''
-        if self.itemList == None:
-            self.itemList = []
-        self.itemList.append(item)
+json_filepath = "./config.json"
+jsoninfo = get_jsondata(json_filepath)
 
 
-def rowSumSetResultIndex(key, content):
-    '''
+def rowsum_set_resultindex(key, content):
+  """
     行求和结果，列下标设置
-    '''
-    if key not in rowSumDic:
-        rowSumDic[key] = RowSumResult()
-    tmp = rowSumDic[key]
-    if isinstance(tmp, RowSumResult):
-        tmp.setIndex(content)
+    """
+  if key not in rowsum_dic:
+    rowsum_dic[key] = RowSumResult()
+  tmp = rowsum_dic[key]
+  if isinstance(tmp, RowSumResult):
+    tmp.set_index(content)
 
 
-def rowSumAddItemIndex(key, listItem):
-    '''
+def rowsum_add_itemindex(key, value):
+  """
     行求和元素，列下标设置
-    '''
-    if key not in rowSumDic:
-        rowSumDic[key] = RowSumResult()
-    tmp = rowSumDic[key]
-    if isinstance(tmp, RowSumResult):
-        tmp.addListItem(listItem)
+    """
+  if key not in rowsum_dic:
+    rowsum_dic[key] = RowSumResult()
+  tmp = rowsum_dic[key]
+  if isinstance(tmp, RowSumResult):
+    tmp.add_list_item(value)
 
 
-class ColSumResult(object):
-    '''
-    列求和
-    '''
-
-    def __init__(self):
-        # 求和结果-列下标
-        self.resultIndex = -1
-        # 求和对象-列下标
-        self.OperatorIndex = -1
-        # 求和对象-行开始
-        self.rowStartIndex = -1
-        # 求和对象-行结束
-        self.rowEndIndex = -1
-
-    def setResultIndex(self, i):
-        self.resultIndex = i
-
-    def setOperatorIndex(self, i):
-        self.OperatorIndex = i
-
-    def setRowStartIndex(self, i):
-        self.rowStartIndex = i
-
-    def setRowEndIndex(self, i):
-        self.rowEndIndex = i
-
-    def getSumStr(self, startIndex, endIndex):
-        self.setRowStartIndex(startIndex)
-        self.setRowEndIndex(endIndex)
-        if self.OperatorIndex != -1:
-            beginStr = XlsHelper.rowCol2Str(self.rowStartIndex, self.OperatorIndex)
-            endStr = XlsHelper.rowCol2Str(self.rowEndIndex, self.OperatorIndex)
-            return "=SUM(%s:%s)" % (beginStr, endStr)
-        return ""
-
-
-def colSumDicCallFunc(key, funName, content):
-    '''
+def colsumdic_callfunc(key, funname, content):
+  """
     列求和字典,列下标设置
-    '''
-    if key not in colSumDic:
-        colSumDic[key] = ColSumResult()
-    mc = operator.methodcaller(funName, content)
-    mc(colSumDic[key])
+    """
+  if key not in colsum_dic:
+    colsum_dic[key] = ColSumResult()
+  mc = operator.methodcaller(funname, content)
+  mc(colsum_dic[key])
 
 
-def getSumStr(key, startIndex, endIndex):
-    if key not in colSumDic:
-        colSumDic[key] = ColSumResult()
-    tmp = colSumDic[key]
-    if isinstance(tmp, ColSumResult):
-        return tmp.getSumStr(startIndex, endIndex)
-    return None
+def get_sumstr(key, startindex, endindex):
+  if key not in colsum_dic:
+    colsum_dic[key] = ColSumResult()
+  tmp = colsum_dic[key]
+  if isinstance(tmp, ColSumResult):
+    return tmp.get_sumstr(XlsHelper, startindex, endindex)
+  return None
 
 
 def main():
-    excelSavePath = jsonInfo.getExcelPath()
-    helper = XlsHelper(jsonInfo, excelSavePath)
-    worksheet = helper.get_worksheet(str(c_year))
-    titleList = jsonInfo.getTitleList()
-    rowSumDicKey = jsonInfo.getRowSumDicKeys()
-    colSumDicKey = jsonInfo.getColSumDicKeys()
+  excel_savepath = jsoninfo.get_excelpath()
+  helper = XlsHelper(jsoninfo, excel_savepath)
+  worksheet = helper.get_worksheet(str(c_year))
+  title_list = jsoninfo.get_titlelist()
+  rowsum_dickey = jsoninfo.get_rowsum_dickeys()
+  colsum_dickey = jsoninfo.get_colsum_dickeys()
 
-    lineIndex = 0  # 行下标
-    listIndex = 0  # 列下标
-    breezeListIndex = -1  # 冻结列下标
+  lineindex = 0  # 行下标
+  listindex = 0  # 列下标
+  breeze_listindex = -1  # 冻结列下标
 
-    for titleItem in titleList:
-        if isinstance(titleItem, TitleItem):
-            value = titleItem.name
-            titleFormat = helper.getTitleFormat(titleItem)
+  for titleitem in title_list:
+    if isinstance(titleitem, TitleItem):
+      value = titleitem.name
+      titleformat = helper.get_titleformat(titleitem)
 
-            secondMenuList = titleItem.getSecList()
-            isHaveSecTitle = secondMenuList is not None
-            if isHaveSecTitle:
-                oldlistIndex = listIndex
-                secondMenuLen = len(secondMenuList)
-                listIndex = listIndex+secondMenuLen-1
-                # 一级菜单合并-行列行列
-                worksheet.merge_range(lineIndex, oldlistIndex, lineIndex, listIndex, value, titleFormat)
-                # 二级菜单内容
-                SecTitleFormat = helper.getTitleFormat(titleItem, True)
-                for tmpLie in range(secondMenuLen):
-                    worksheet.write(lineIndex+1, oldlistIndex + tmpLie, secondMenuList[tmpLie], SecTitleFormat)
-            else:
-                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex, value, titleFormat)
-            # 列宽行高
-            titleWidth = titleItem.getTitleWidth()
-            worksheet.set_column(listIndex, listIndex, titleWidth)
-            titleHeight = jsonInfo.getTitleHeight()
-            worksheet.set_row(lineIndex, titleHeight)
+      secondmenu_list = titleitem.get_seclist()
+      ishave_sectitle = secondmenu_list is not None
+      if ishave_sectitle:
+        oldlist_index = listindex
+        secondmenu_len = len(secondmenu_list)
+        listindex = listindex + secondmenu_len - 1
+        # 一级菜单合并-行列行列
+        worksheet.merge_range(lineindex, oldlist_index, lineindex, listindex,
+                              value, titleformat)
+        # 二级菜单内容
+        sectitle_format = helper.get_titleformat(titleitem, True)
+        for tmplie in range(secondmenu_len):
+          worksheet.write(
+              lineindex + 1,
+              oldlist_index + tmplie,
+              secondmenu_list[tmplie],
+              sectitle_format,
+          )
+      else:
+        worksheet.merge_range(lineindex, listindex, lineindex + 1, listindex,
+                              value, titleformat)
+      # 列宽行高
+      title_width = titleitem.get_title_width()
+      worksheet.set_column(listindex, listindex, title_width)
+      title_height = jsoninfo.get_title_height()
+      worksheet.set_row(lineindex, title_height)
 
-            # 冻结
-            bFreeze = titleItem.isFreeze()
-            if bFreeze:
-                breezeListIndex = listIndex
-            # 合计
-            countCellValue = titleItem.getCountCellValue()
-            isHaveCountCell = countCellValue is not None
-            if isHaveCountCell:
-                listIndex = listIndex+1
-                countCellList.append(listIndex)
-                worksheet.merge_range(lineIndex, listIndex, lineIndex+1, listIndex, countCellValue, titleFormat)
+      # 冻结
+      is_freeze = titleitem.get_isfreeze()
+      if is_freeze:
+        breeze_listindex = listindex
+      # 合计
+      countcell_value = titleitem.get_countcell_value()
+      is_countcell = countcell_value is not None
+      if is_countcell:
+        listindex = listindex + 1
+        countcell_list.append(listindex)
+        worksheet.merge_range(
+            lineindex,
+            listindex,
+            lineindex + 1,
+            listindex,
+            countcell_value,
+            titleformat,
+        )
 
-            # 行求和
-            for key in rowSumDicKey:
-                isNeedRowSum = titleItem.keyTrueInTitleItem(key)
-                if isNeedRowSum:
-                    rowSumAddItemIndex(key, listIndex)
+      # 行求和
+      for key in rowsum_dickey:
+        is_rowsum = titleitem.get_is_keytrue_in_titleitem(key)
+        if is_rowsum:
+          rowsum_add_itemindex(key, listindex)
 
-            rowSumDicValue = titleItem.getRowSumDicValue()
-            isRowSumResultHere = rowSumDicValue is not None
-            if isRowSumResultHere:
-                rowSumSetResultIndex(rowSumDicValue, listIndex)
+      rowsumdic_value = titleitem.get_rowsum_dicvalue()
+      is_rowsum_result_here = rowsumdic_value is not None
+      if is_rowsum_result_here:
+        rowsum_set_resultindex(rowsumdic_value, listindex)
 
-            # 列求和
-            for key in colSumDicKey:
-                isNeedColSum = titleItem.keyTrueInTitleItem(key)
-                if isNeedColSum:
-                    colSumDicCallFunc(key, 'setOperatorIndex', listIndex)
+      # 列求和
+      for key in colsum_dickey:
+        is_colsum = titleitem.get_is_keytrue_in_titleitem(key)
+        if is_colsum:
+          colsumdic_callfunc(key, "set_operatorindex", listindex)
 
-            colSumDicValue = titleItem.getColSumDicValue()
-            isColSumDicResultHere = colSumDicValue is not None
-            if isColSumDicResultHere:
-                colSumDicCallFunc(colSumDicValue, 'setResultIndex', listIndex)
-            listIndex = listIndex+1
+      colsumdic_value = titleitem.get_colsum_dicvalue()
+      is_colsum_dicresult_here = colsumdic_value is not None
+      if is_colsum_dicresult_here:
+        colsumdic_callfunc(colsumdic_value, "set_resultindex", listindex)
+      listindex = listindex + 1
 
-    if listIndex == 0:
-        maxlistIndex = listIndex
-    else:
-        maxlistIndex = listIndex-1
+  if listindex == 0:
+    maxlist_index = listindex
+  else:
+    maxlist_index = listindex - 1
 
-    # 日期&周目
-    countNumCell_format = helper.getCountNumFormat()
-    sum_format = helper.getSumResultFormat()
-    monthEnd_format = helper.getMonthEndFormat()
+  # 日期&周目
+  count_numcell_format = helper.get_countnum_format()
+  sum_format = helper.get_sumresult_format()
+  month_end_format = helper.get_monthend_format()
 
-    lineIndex = lineIndex+jsonInfo.getTitleTotalLine()
-    firstShowDayLine = lineIndex
-    # 按月/行冻结
-    freezeDetail = jsonInfo.getFreezeLineDetail()
-    # 默认冻结
-    if breezeListIndex != -1:
-        worksheet.freeze_panes(firstShowDayLine, breezeListIndex, firstShowDayLine, 0)
-    for c_month in range(max_month):
-        c_month = c_month+1
-        newWeek = True
-        curdayIndex = 0
-        montTotoalDayNum = calendar.monthrange(c_year, c_month)[1]
-        weekStartLineIndex = weekEndLineIndex = 0
-        montStartLineIndex = montEndLineIndex = 0
-        # 按月冻结行
-        if breezeListIndex != -1 and int(freezeDetail) == c_month and jsonInfo.IsFreezeMonth():
-            worksheet.freeze_panes(firstShowDayLine, breezeListIndex, lineIndex, 0)
-        for dayItem in obj.itermonthdays4(c_year, c_month):
-            if not dayItem[1] == c_month:
-                continue
-            if curdayIndex == 0:
-                montStartLineIndex = lineIndex
-            if newWeek:
-                weekStartLineIndex = lineIndex
-                newWeek = False
-            # 按指定行冻结行
-            if breezeListIndex != -1 and int(freezeDetail)-1 == lineIndex and jsonInfo.IsFreezeLine():
-                worksheet.freeze_panes(firstShowDayLine, breezeListIndex, lineIndex, 0)
-            # 日期：年月日，显示格式:x月x日
-            yearMontDay = "%d-%d-%d" % (c_year, dayItem[1], dayItem[2])
-            date = datetime.strptime(yearMontDay, "%Y-%m-%d")
-            date_format = helper.getDateFormat()
-            worksheet.write_datetime(lineIndex, 0, date, date_format)
+  lineindex = lineindex + jsoninfo.get_titletotal_line()
+  first_showday_line = lineindex
+  # 按月/行冻结
+  freeze_detail = jsoninfo.get_freezeline_detail()
+  # 默认冻结
+  if breeze_listindex != -1:
+    worksheet.freeze_panes(first_showday_line, breeze_listindex,
+                           first_showday_line, 0)
+  for c_month in range(max_month):
+    c_month = c_month + 1
+    new_week = True
+    curday_index = 0
+    month_totoal_daynum = calendar.monthrange(c_year, c_month)[1]
+    week_start_lineindex = week_end_lineindex = 0
+    month_start_lineindex = month_end_lineindex = 0
+    # 按月冻结行
+    if (breeze_listindex != -1 and int(freeze_detail) == c_month
+        and jsoninfo.get_isfreezemonth()):
+      worksheet.freeze_panes(first_showday_line, breeze_listindex, lineindex,
+                             0)
+    for day_item in obj.itermonthdays4(c_year, c_month):
+      if not day_item[1] == c_month:
+        continue
+      if curday_index == 0:
+        month_start_lineindex = lineindex
+      if new_week:
+        week_start_lineindex = lineindex
+        new_week = False
+      # 按指定行冻结行
+      if (breeze_listindex != -1 and int(freeze_detail) - 1 == lineindex
+          and jsoninfo.get_isfreezeline()):
+        worksheet.freeze_panes(first_showday_line, breeze_listindex, lineindex,
+                               0)
+      # 日期：年月日，显示格式:x月x日
+      year_month_day = f"{c_year}-{day_item[1]}-{day_item[2]}"
+      date = datetime.strptime(year_month_day, "%Y-%m-%d")
+      date_format = helper.get_dateformat()
+      worksheet.write_datetime(lineindex, 0, date, date_format)
 
-            # 周数
-            cnWeekNumStr = XlsHelper.getWeekDayCnNameByIndex(dayItem[3])
-            weekday_format = helper.getWeekFormat()
-            worksheet.write(lineIndex, 1, cnWeekNumStr, weekday_format)
-            curdayIndex = curdayIndex+1
+      # 周数
+      cn_weeknum_str = XlsHelper.get_weekday_cn_name_by_index(day_item[3])
+      weekday_format = helper.get_weekformat()
+      worksheet.write(lineindex, 1, cn_weeknum_str, weekday_format)
+      curday_index = curday_index + 1
 
-            # 行求和
-            for sumItem in rowSumDic.keys():
-                sumItemList = []
-                for tmpLie in range(maxlistIndex):
-                    for lie in countCellList:
-                        if tmpLie == lie:
-                            # 合计列内容
-                            worksheet.write(lineIndex, tmpLie, "",
-                                            countNumCell_format)
-                    tmpList = rowSumDic[sumItem]
-                    if isinstance(tmpList, RowSumResult):
-                        for needCountLie in tmpList.itemList:
-                            if tmpLie == needCountLie:
-                                sumStr = XlsHelper.rowCol2Str(lineIndex, tmpLie)
-                                sumItemList.append(sumStr)
-                # 行求和内容
-                sumStr = ",".join(sumItemList)
-                sumStr = "=SUM(%s)" % sumStr
-                result = rowSumDic[sumItem]
-                if isinstance(result, RowSumResult):
-                    worksheet.write(lineIndex, result.index, sumStr, sum_format)
+      # 行求和
+      for key, value in rowsum_dic.items():
+        sum_itemlist = []
+        for tmplie in range(maxlist_index):
+          for lie in countcell_list:
+            if tmplie == lie:
+              # 合计列内容
+              worksheet.write(lineindex, tmplie, "", count_numcell_format)
+          if isinstance(value, RowSumResult):
+            for needcount_lie in value.item_list:
+              if tmplie == needcount_lie:
+                sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
+                sum_itemlist.append(sumstr)
+        # 行求和内容
+        sumstr = ",".join(sum_itemlist)
+        sumstr = f"=SUM({sumstr})"
+        if isinstance(value, RowSumResult):
+          worksheet.write(lineindex, value.index, sumstr, sum_format)
 
-            # 周求和
-            weekCountKey = jsonInfo.getWeekCountKey()
-            if cnWeekNumStr == '周日':
-                weekEndLineIndex = lineIndex
-                sumStr = getSumStr(weekCountKey, weekStartLineIndex, weekEndLineIndex)
-                lineIndex = lineIndex+1
-                result = colSumDic[weekCountKey]
-                if isinstance(result, ColSumResult):
-                    worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
-                newWeek = True
-            #  月求和
-            if curdayIndex == montTotoalDayNum:
-                weekEndLineIndex = lineIndex
-                montEndLineIndex = lineIndex
+      # 周求和
+      weekcount_key = jsoninfo.get_weekcount_key()
+      if cn_weeknum_str == "周日":
+        week_end_lineindex = lineindex
+        sumstr = get_sumstr(weekcount_key, week_start_lineindex,
+                            week_end_lineindex)
+        lineindex = lineindex + 1
+        result = colsum_dic[weekcount_key]
+        if isinstance(result, ColSumResult):
+          worksheet.write(lineindex, result.result_index, sumstr, sum_format)
+        new_week = True
+      #  月求和
+      if curday_index == month_totoal_daynum:
+        week_end_lineindex = lineindex
+        month_end_lineindex = lineindex
 
-                if cnWeekNumStr != '周日':
-                    sumStr = getSumStr(weekCountKey, weekStartLineIndex, weekEndLineIndex)
-                    result = colSumDic[weekCountKey]
-                    if isinstance(result, ColSumResult):
-                        lineIndex = lineIndex+1
-                        worksheet.write(lineIndex, result.resultIndex, sumStr, sum_format)
+        if cn_weeknum_str != "周日":
+          sumstr = get_sumstr(weekcount_key, week_start_lineindex,
+                              week_end_lineindex)
+          result = colsum_dic[weekcount_key]
+          if isinstance(result, ColSumResult):
+            lineindex = lineindex + 1
+            worksheet.write(lineindex, result.result_index, sumstr, sum_format)
 
-                monthCountKey = jsonInfo.getMonthCountKey()
-                sumStr = getSumStr(monthCountKey, montStartLineIndex, montEndLineIndex)
-                result = colSumDic[monthCountKey]
-                if isinstance(result, ColSumResult):
-                    lineIndex = lineIndex+1
-                    for tmpCol in range(maxlistIndex):
-                        if tmpCol < maxlistIndex:
-                            worksheet.write(lineIndex, tmpCol, "", monthEnd_format)
-                    worksheet.write(lineIndex, result.resultIndex, sumStr, monthEnd_format)
-                newWeek = True
-            # 行高
-            defaultTitleHeight = jsonInfo.getTitleHeight()
-            worksheet.set_row(lineIndex, defaultTitleHeight)
-            lineIndex = lineIndex+1
+        monthcount_key = jsoninfo.get_monthcount_key()
+        sumstr = get_sumstr(monthcount_key, month_start_lineindex,
+                            month_end_lineindex)
+        result = colsum_dic[monthcount_key]
+        if isinstance(result, ColSumResult):
+          lineindex = lineindex + 1
+          for tmpcol in range(maxlist_index):
+            if tmpcol < maxlist_index:
+              worksheet.write(lineindex, tmpcol, "", month_end_format)
+          worksheet.write(lineindex, result.result_index, sumstr,
+                          month_end_format)
+        new_week = True
+      # 行高
+      defaulttitle_height = jsoninfo.get_title_height()
+      worksheet.set_row(lineindex, defaulttitle_height)
+      lineindex = lineindex + 1
 
-    helper.close_workbook()
+  helper.close_workbook()
 
 
 if __name__ == "__main__":
-    main()
+  main()

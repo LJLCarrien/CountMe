@@ -793,11 +793,21 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
     - [x] 格式
     - [x] 配置
-    - [ ] 行求和、列求和
+    - [x] 行求和、列求和
 
-  - [ ] 根据规范优化一次
+  - [x] 根据规范优化一次
 
     参考[Python风格规范](https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/#id1)
+    
+    使用代码检查工具 pylint
+    
+    - 常量大写
+    - 类总是使用驼峰式命名，即单词**首字母大写**其余字母小写
+    - 实例函数名，全小写，下划线分割单词
+    
+    参考：[PEP 8 -- Python 代码风格指南](https://www.python.org/dev/peps/pep-0008/)
+    
+    使用自动格式化工具yapf
 
 - #### 资料文档
 

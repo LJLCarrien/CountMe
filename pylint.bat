@@ -1,0 +1,1 @@
+pylint --output=output.txt countMe.py

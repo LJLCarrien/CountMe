@@ -1,13 +1,11 @@
 {
-	"excelPath":"./消费.xlsx",
+	"excelPath": "./消费.xlsx",
 	"defaultTitleWidth": 11,
 	"defaultTitleHeight": 17,
-
-	"freezeLineMode":{
-		"type":"month",
-		"detail":"1"
+	"freezeLineMode": {
+		"type": "month",
+		"detail": "1"
 	},
-
 	"defaultBold": false,
 	"defaultHorAlignment": "center",
 	"defaultVerAlignment": "vcenter",
@@ -17,128 +15,128 @@
 	"defaultBgColor": null,
 	"format": {
 		"title": {
-			"fontSize": 12,
-			"fontName":"微软雅黑",
+			"fontsize": 12,
+			"fontname": "微软雅黑",
 			"bold": true
 		},
-		"secTitle":{
-			"fontName":"微软雅黑",
-			"fontSize": 10,
+		"secTitle": {
+			"fontname": "微软雅黑",
+			"fontsize": 10,
 			"bold": true
 		},
 		"date": {
-			"numFormat": "m\"月\"d\"日\""
+			"numformat": "m\"月\"d\"日\""
 		},
 		"weekDay": {
-			"horAlignment": "left",
-			"verAlignment": "vcenter"
+			"horalignment": "left",
+			"veralignment": "vcenter"
 		},
 		"countNumCell": {
-			"numFormat": "0.00",
-			"fontColor": "red"
+			"numformat": "0.00",
+			"fontcolor": "red"
 		},
 		"sumResult": {
 			"bold": true,
-			"fontSize": 16,
-			"fontColor": "red"
+			"fontsize": 16,
+			"fontcolor": "red"
 		},
 		"monthEnd": {
 			"bold": true,
-			"fontSize": 16,
-			"fontColor": "#a12f2f",
-			"bgColor": "#dca09e"
+			"fontsize": 16,
+			"fontcolor": "#a12f2f",
+			"bgcolor": "#dca09e"
 		}
 	},
 	"title": [
 		{
 			"name": "日期",
-			"fontColor": "white"
+			"fontcolor": "white"
 		},
 		{
 			"name": "周目",
-			"fontColor": "white"
+			"fontcolor": "white"
 		},
 		{
 			"name": "ToDo",
 			"width": 20,
-			"fontColor": "red",
-			"fontName":"方正姚体",
-			"freeze":true
+			"fontcolor": "red",
+			"fontname": "方正姚体",
+			"freeze": true
 		},
 		{
 			"name": "HaveDone",
 			"width": 20,
-			"fontColor": "red",
-			"fontName":"方正姚体"
+			"fontcolor": "red",
+			"fontname": "方正姚体"
 		},
 		{
 			"name": "餐饮",
 			"secondSort": "diet",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#fe4365",
+			"fontcolor": "white",
+			"bgcolor": "#fe4365",
 			"dayMustCount": true
 		},
 		{
 			"name": "生活用品",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#fc9d9a",
+			"fontcolor": "white",
+			"bgcolor": "#fc9d9a",
 			"dayMustCount": true
 		},
 		{
 			"name": "交通",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#f9cdad",
+			"fontcolor": "white",
+			"bgcolor": "#f9cdad",
 			"dayMustCount": true
 		},
 		{
 			"name": "住房",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#c8c8a9",
+			"fontcolor": "white",
+			"bgcolor": "#c8c8a9",
 			"dayMustCount": true
 		},
 		{
 			"name": "日必须",
 			"rowSumDic": "dayMustCount",
-			"fontColor": "white",
-			"bgColor": "#83af9b",
+			"fontcolor": "white",
+			"bgcolor": "#83af9b",
 			"dayCount": true
 		},
 		{
 			"name": "娱乐",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#8a977b",
+			"fontcolor": "white",
+			"bgcolor": "#8a977b",
 			"dayCount": true
 		},
 		{
 			"name": "购物",
 			"countCell": "合计",
-			"fontColor": "white",
-			"bgColor": "#f4cf00",
+			"fontcolor": "white",
+			"bgcolor": "#f4cf00",
 			"dayCount": true
 		},
 		{
 			"name": "日合计",
 			"rowSumDic": "dayCount",
-			"fontColor": "white",
-			"bgColor": "#dc5712",
+			"fontcolor": "white",
+			"bgcolor": "#dc5712",
 			"weekCount": true,
 			"monthCount": true
 		},
 		{
 			"name": "周合计",
-			"fontColor": "white",
-			"bgColor": "#b05574",
+			"fontcolor": "white",
+			"bgcolor": "#b05574",
 			"colSumDic": "weekCount"
 		},
 		{
 			"name": "月合计",
-			"fontColor": "white",
-			"bgColor": "#dca09e",
+			"fontcolor": "white",
+			"bgcolor": "#dca09e",
 			"colSumDic": "monthCount"
 		}
 	],

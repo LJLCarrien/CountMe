@@ -1,0 +1,16 @@
+{
+    "python.linting.pylintPath": "pylint",
+    // 默认对Python文件进行静态检查
+    "python.linting.enabled": true,
+    // 默认在Python文件保存时进行静态检查
+    "python.linting.lintOnSave": true,
+    // 默认使用pylint对Python文件进行静态检查
+    "python.linting.pylintEnabled": true,
+    //直接应用所有pylint检查规则
+    "python.linting.pylintUseMinimalCheckers": false,
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        "--style={based_on_style: pep8, indent_width: 2}"
+    ],
+    "editor.formatOnSave": true
+}
