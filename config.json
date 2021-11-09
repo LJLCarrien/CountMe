@@ -49,113 +49,139 @@
 	},
 	"title": [
 		{
-			"name": "日期",
+			"name": "date",
+			"showname": "日期",
 			"fontcolor": "white"
 		},
 		{
-			"name": "周目",
+			"name": "weekday",
+			"showname": "周目",
 			"fontcolor": "white"
 		},
 		{
-			"name": "ToDo",
+			"name": "todo",
+			"showname": "ToDo",
 			"width": 20,
 			"fontcolor": "red",
 			"fontname": "方正姚体",
 			"freeze": true
 		},
 		{
-			"name": "HaveDone",
+			"name": "havedone",
+			"showname": "HaveDone",
 			"width": 20,
 			"fontcolor": "red",
 			"fontname": "方正姚体"
 		},
 		{
-			"name": "餐饮",
+			"name": "diet",
+			"showname": "餐饮",
 			"secondSort": "diet",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fe4365",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
-			"name": "生活用品",
+			"name": "dailyuse",
+			"showname": "生活用品",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fc9d9a",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
-			"name": "交通",
+			"name": "traffic",
+			"showname": "交通",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f9cdad",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
-			"name": "住房",
+			"name": "housing",
+			"showname": "住房",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#c8c8a9",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
-			"name": "日必须",
-			"rowSumDic": "dayMustCount",
+			"name": "daymustcoust",
+			"showname": "日必须",
+			"rowSumDic": "dayMustCoust",
 			"fontcolor": "white",
 			"bgcolor": "#83af9b",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
-			"name": "娱乐",
+			"name": "entertainment",
+			"showname": "娱乐",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#8a977b",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
-			"name": "购物",
+			"name": "shopping",
+			"showname": "购物",
 			"countCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f4cf00",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
-			"name": "日合计",
-			"rowSumDic": "dayCount",
+			"name": "daycoust",
+			"showname": "日合计",
+			"rowSumDic": "dayCoust",
 			"fontcolor": "white",
 			"bgcolor": "#dc5712",
-			"weekCount": true,
-			"monthCount": true
+			"weekCoust": true,
+			"monthCoust": true
 		},
 		{
-			"name": "周合计",
+			"name": "weekcoust",
+			"showname": "周合计",
 			"fontcolor": "white",
 			"bgcolor": "#b05574",
-			"colSumDic": "weekCount"
+			"colSumDic": "weekCoust"
 		},
 		{
-			"name": "月合计",
+			"name": "monthcoust",
+			"showname": "月合计",
 			"fontcolor": "white",
 			"bgcolor": "#dca09e",
-			"colSumDic": "monthCount"
+			"colSumDic": "monthCoust"
 		}
 	],
 	"rowSumDicKey": [
-		"dayMustCount",
-		"dayCount"
+		"dayMustCoust",
+		"dayCoust"
 	],
 	"colSumDicKey": [
-		"weekCount",
-		"monthCount"
+		"weekCoust",
+		"monthCoust"
 	],
 	"secondTitle": {
 		"diet": [
-			"早餐",
-			"午餐",
-			"晚餐",
-			"宵夜",
-			"饮食饮料",
-			"外卖"
+			{
+				"breakfast": "早餐"
+			},
+			{
+				"lunch": "午餐"
+			},
+			{
+				"dinner": "晚餐"
+			},
+			{
+				"nightsnack": "宵夜"
+			},
+			{
+				"snacksdrinks": "零食饮料"
+			},
+			{
+				"takeoutfood": "外卖"
+			}
 		]
 	}
 }

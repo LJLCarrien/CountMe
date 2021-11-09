@@ -17,6 +17,7 @@ class TitleItem():
   """标题类"""
   def reset(self):
     self.name = ""
+    self.showname = ""
     self.sec_list = None
     # 标题默认格式
     self.format_item: FormatItem = None

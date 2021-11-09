@@ -540,7 +540,7 @@ pip install xlsxwriter
 - "rowSumDic"-属性：行求和结果关键字，一般是用于行求和的结果解释
   对应的关键字做其他列的属性且为true时，表示此列为对应属性行求和时的元素之一。
 
-##### 	举例：dayMustCount
+##### 	举例：dayMustCoust
 
 ​		表示：日必须=餐饮+生活用品+交通+住房
 
@@ -550,35 +550,35 @@ pip install xlsxwriter
 		{
 			"name": "餐饮",
             "countCell": "合计",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
 			"name": "生活用品",
             "countCell": "合计",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
 			"name": "交通",
             "countCell": "合计",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
 			"name": "住房",
             "countCell": "合计",
-			"dayMustCount": true
+			"dayMustCoust": true
 		},
 		{
 			"name": "日必须",
-			"rowSumDic": "dayMustCount",
+			"rowSumDic": "dayMustCoust",
 		},
 	],
 	"rowSumDicKey": [
-		"dayMustCount"
+		"dayMustCoust"
 	],
 }
 ```
 
-##### 	举例：dayCount
+##### 	举例：dayCoust
 
 ​		表示：日合计=日必须+娱乐+购物
 
@@ -587,25 +587,25 @@ pip install xlsxwriter
 	"title": [
 		{
 			"name": "日必须",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
 			"name": "娱乐",
             "countCell": "合计",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
 			"name": "购物",
             "countCell": "合计",
-			"dayCount": true
+			"dayCoust": true
 		},
 		{
 			"name": "日合计",
-			"rowSumDic": "dayCount",
+			"rowSumDic": "dayCoust",
 		},
 	],
 	"rowSumDicKey": [
-		"dayCount"
+		"dayCoust"
 	],
 }
 ```
@@ -619,7 +619,7 @@ pip install xlsxwriter
 
   ​	列关键字做其他列的属性且为true时，表示求和此列。
 
-##### 举例：weekCount、MonthCount
+##### 举例：weekCoust、MonthCount
 
 weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求和结果在哪一列。
 
@@ -630,14 +630,14 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 	"title": [
 		{
 			"name": "日合计",
-			"weekCount": true,
+			"weekCoust": true,
 			"MonthCount": true
 		},
 		{
 			"name": "周合计",
 			"fontColor": "white",
 			"bgColor": "#b05574",
-			"colSumDic": "weekCount"
+			"colSumDic": "weekCoust"
 		},
 		{
 			"name": "月合计",
@@ -647,7 +647,7 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 		}
 	],
 	"colSumDicKey": [
-		"weekCount",
+		"weekCoust",
 		"MonthCount"
 	],
 }
@@ -756,11 +756,11 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
       - 日必须
 
-        ​	关键字：dayMustCount
+        ​	关键字：dayMustCoust
 
       - 日合计
 
-        ​	关键字：dayCount
+        ​	关键字：dayCoust
 
         ​	日合计=日必须+日消耗
 
@@ -774,11 +774,11 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
         ​	合计频率：从月开始到周日；从周一到周日；从周一到月结束；
 
-        ​	关键字：weekCount
+        ​	关键字：weekCoust
 
       - 月合计
 
-        ​	关键字：monthCount
+        ​	关键字：monthCoust
 
 - #### 增加功能
   

@@ -62,7 +62,8 @@ def get_sumstr(key, startindex, endindex):
   return None
 
 
-def main():
+def create_empty():
+  '''创建空excel模板'''
   excel_savepath = jsoninfo.get_excelpath()
   helper = XlsHelper(jsoninfo, excel_savepath)
   worksheet = helper.get_worksheet(str(c_year))
@@ -76,7 +77,7 @@ def main():
 
   for titleitem in title_list:
     if isinstance(titleitem, TitleItem):
-      value = titleitem.name
+      value = titleitem.showname
       titleformat = helper.get_titleformat(titleitem)
 
       secondmenu_list = titleitem.get_seclist()
@@ -266,5 +267,10 @@ def main():
   helper.close_workbook()
 
 
+def read_data():
+  pass
+
+
 if __name__ == "__main__":
-  main()
+  create_empty()
+  # read_data()

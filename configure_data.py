@@ -86,11 +86,11 @@ class ConfigureData():
 
   def get_weekcount_key(self) -> str:
     '''周合计'''
-    return "weekCount"
+    return "weekCoust"
 
   def get_monthcount_key(self) -> str:
     '''月合计'''
-    return "monthCount"
+    return "monthCoust"
 
   def get_format_dic(self) -> dict:
     '''获取fomat'''
