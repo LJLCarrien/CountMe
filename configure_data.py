@@ -1,6 +1,6 @@
 """数据配置管理类"""
 import json
-from titleItem import TitleItem
+from item_title import TitleItem
 
 
 class ConfigureData():

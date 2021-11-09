@@ -1,6 +1,6 @@
 from configure_data import ConfigureData
-from format_item import FormatItem
-from titleItem import TitleItem, TitleType
+from item_format import FormatItem
+from item_title import TitleItem, TitleType
 import xlsxwriter
 from xlsxwriter.format import Format
 

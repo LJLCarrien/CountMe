@@ -28,9 +28,9 @@ class FormatItem():
         if hasattr(self, key):
           self.__setattr__(key, dic[key])
         else:
-          print(f"format_item 格式属性：{key}未支持")
+          print(f"item_format 格式属性：{key}未支持")
     else:
-      print(f"format_item setData 未支持该类型: {type(info)}")
+      print(f"item_format setData 未支持该类型: {type(info)}")
 
   def get_format(self, workbook: xlsxwriter.Workbook) -> Format:
     result_format = workbook.add_format()
