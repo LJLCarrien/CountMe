@@ -1,7 +1,0 @@
-************* Module countme
-countMe.py:271:20: R1733: Unnecessary dictionary index lookup, use 'value' instead (unnecessary-dict-index-lookup)
-countMe.py:280:17: R1733: Unnecessary dictionary index lookup, use 'value' instead (unnecessary-dict-index-lookup)
-
------------------------------------
-Your code has been rated at 9.91/10
-
