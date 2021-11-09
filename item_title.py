@@ -84,6 +84,9 @@ class TitleItem():
   def get_seclist(self):
     return self.sec_list
 
+  def get_seclist_showname_by_index(self, index):
+    return self.sec_list[index]['showname']
+
   def set_title_width(self, confdic: dict):
     '''列宽'''
     width = confdic["defaultTitleWidth"]

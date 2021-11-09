@@ -1,6 +1,8 @@
 """统计人生"""
 from datetime import datetime
 import calendar
+import json
+from item_savedata import SaveDataItem
 from sum_colsum import ColSumResult
 from sum_rowsum import RowSumResult
 from item_title import TitleItem
@@ -17,8 +19,10 @@ colsum_dic = {}
 # 合计列下标数组
 countcell_list = []
 
-json_filepath = "./config.json"
-jsoninfo = get_jsondata(json_filepath)
+savedata_json_filepath = "./save_data.json"
+
+config_json_filepath = "./config.json"
+jsoninfo = get_jsondata(config_json_filepath)
 
 
 def rowsum_set_resultindex(key, content):
@@ -92,12 +96,9 @@ def create_empty():
         # 二级菜单内容
         sectitle_format = helper.get_titleformat(titleitem, True)
         for tmplie in range(secondmenu_len):
-          worksheet.write(
-              lineindex + 1,
-              oldlist_index + tmplie,
-              secondmenu_list[tmplie],
-              sectitle_format,
-          )
+          worksheet.write(lineindex + 1, oldlist_index + tmplie,
+                          titleitem.get_seclist_showname_by_index(tmplie),
+                          sectitle_format)
       else:
         worksheet.merge_range(lineindex, listindex, lineindex + 1, listindex,
                               value, titleformat)
@@ -267,8 +268,17 @@ def create_empty():
   helper.close_workbook()
 
 
+savedata_dict = {}
+
+
 def read_data():
   pass
+  # with open(savedata_json_filepath, 'rb') as f:
+  #   jsondic = json.load(f)
+  #   for key, value in jsondic.items():
+  #     sd_item = SaveDataItem(value)
+  #     savedata_dict[key] = sd_item
+  #   print(savedata_dict)
 
 
 def write_data():

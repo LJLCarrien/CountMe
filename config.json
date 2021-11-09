@@ -165,22 +165,28 @@
 	"secondTitle": {
 		"diet": [
 			{
-				"breakfast": "早餐"
+				"name": "breakfast",
+				"showname": "早餐"
 			},
 			{
-				"lunch": "午餐"
+				"name": "lunch",
+				"showname": "午餐"
 			},
 			{
-				"dinner": "晚餐"
+				"name": "dinner",
+				"showname": "晚餐"
 			},
 			{
-				"nightsnack": "宵夜"
+				"name": "nightsnack",
+				"showname": "宵夜"
 			},
 			{
-				"snacksdrinks": "零食饮料"
+				"name": "snacksdrinks",
+				"showname": "零食饮料"
 			},
 			{
-				"takeoutfood": "外卖"
+				"name": "takeoutfood",
+				"showname": "外卖"
 			}
 		]
 	}
