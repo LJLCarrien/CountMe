@@ -1,0 +1,80 @@
+{
+    "emptyTemplate": {
+        "todo": "",
+        "havedone": "",
+        "diet": {
+            "breakfast": "",
+            "lunch": "",
+            "dinner": "",
+            "nightsnack": "",
+            "snacksdrinks": "",
+            "takeoutfood": "",
+            "countcell": -1
+        },
+        "dailyuse": {
+            "des": "",
+            "countcell": -1
+        },
+        "traffic": {
+            "des": "",
+            "countcell": -1
+        },
+        "housing": {
+            "des": "",
+            "countcell": -1
+        },
+        "daymustcoust": {
+            "countcell": 0
+        },
+        "entertainment": {
+            "des": "",
+            "countcell": -1
+        },
+        "shopping": {
+            "des": "",
+            "countcell": -1
+        },
+        "daycoust": {
+            "countcell": 0
+        }
+    },
+    "2021/1/1": {
+        "todo": "a",
+        "havedone": "b",
+        "diet": {
+            "breakfast": "c",
+            "lunch": "d",
+            "dinner": "e",
+            "nightsnack": "f",
+            "snacksdrinks": "g",
+            "takeoutfood": "h",
+            "countcell": 1
+        },
+        "dailyuse": {
+            "des": "i",
+            "countcell": 2
+        },
+        "traffic": {
+            "des": "j",
+            "countcell": 3
+        },
+        "housing": {
+            "des": "k",
+            "countcell": 4
+        },
+        "entertainment": {
+            "des": "l",
+            "countcell": 5
+        },
+        "shopping": {
+            "des": "m",
+            "countcell": 6
+        },
+        "daymustcoust": {
+            "countcell": 7
+        },
+        "daycoust": {
+            "countcell": 8
+        }
+    }
+}

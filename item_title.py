@@ -28,6 +28,7 @@ class TitleItem():
     self.bgcolor = None
     self.width = None
     self.height = None
+    self.columnindex = -1
 
   def __init__(self):
     self.reset()
@@ -83,6 +84,9 @@ class TitleItem():
 
   def get_seclist(self):
     return self.sec_list
+
+  def get_seclist_name_by_index(self, index):
+    return self.sec_list[index]['name']
 
   def get_seclist_showname_by_index(self, index):
     return self.sec_list[index]['showname']

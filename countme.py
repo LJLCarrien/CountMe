@@ -2,6 +2,7 @@
 from datetime import datetime
 import calendar
 import json
+from configure_data import ConfigureData
 from item_savedata import SaveDataItem
 from sum_colsum import ColSumResult
 from sum_rowsum import RowSumResult
@@ -20,6 +21,8 @@ colsum_dic = {}
 countcell_list = []
 
 savedata_json_filepath = "./save_data.json"
+savedata_dict = {}
+title_column_dic = {}
 
 config_json_filepath = "./config.json"
 jsoninfo = get_jsondata(config_json_filepath)
@@ -68,6 +71,7 @@ def get_sumstr(key, startindex, endindex):
 
 def create_empty():
   '''创建空excel模板'''
+  title_column_dic = {}
   excel_savepath = jsoninfo.get_excelpath()
   helper = XlsHelper(jsoninfo, excel_savepath)
   worksheet = helper.get_worksheet(str(c_year))
@@ -81,7 +85,8 @@ def create_empty():
 
   for titleitem in title_list:
     if isinstance(titleitem, TitleItem):
-      value = titleitem.showname
+      value_sditem = titleitem.showname
+
       titleformat = helper.get_titleformat(titleitem)
 
       secondmenu_list = titleitem.get_seclist()
@@ -92,16 +97,23 @@ def create_empty():
         listindex = listindex + secondmenu_len - 1
         # 一级菜单合并-行列行列
         worksheet.merge_range(lineindex, oldlist_index, lineindex, listindex,
-                              value, titleformat)
+                              value_sditem, titleformat)
         # 二级菜单内容
         sectitle_format = helper.get_titleformat(titleitem, True)
         for tmplie in range(secondmenu_len):
-          worksheet.write(lineindex + 1, oldlist_index + tmplie,
+          new_col = oldlist_index + tmplie
+          #标题列下标字典
+          title_column_dic[new_col] = titleitem.get_seclist_name_by_index(
+              tmplie)
+          worksheet.write(lineindex + 1, new_col,
                           titleitem.get_seclist_showname_by_index(tmplie),
                           sectitle_format)
       else:
+        #标题列下标字典
+        title_column_dic[listindex] = titleitem.name
         worksheet.merge_range(lineindex, listindex, lineindex + 1, listindex,
-                              value, titleformat)
+                              value_sditem, titleformat)
+
       # 列宽行高
       title_width = titleitem.get_title_width()
       worksheet.set_column(listindex, listindex, title_width)
@@ -205,24 +217,68 @@ def create_empty():
       worksheet.write(lineindex, 1, cn_weeknum_str, weekday_format)
       curday_index = curday_index + 1
 
+      #写入数据
+      key_ymd = year_month_day.replace('-', '/')
+      for key, value_sditem in savedata_dict.items():
+        if key_ymd == key:
+          for attr, attr_value in value_sditem.__dict__.items():
+            if isinstance(attr_value, dict):
+              # 含合计列&有二级列表
+              bhave_sec = jsoninfo.get_b_mainmenu_have_secondmenu(attr)
+              if bhave_sec:
+                max_tmpcol = 0
+                for v_key, v_value in attr_value.items():
+                  for tmpcol in range(maxlist_index):
+                    if tmpcol in title_column_dic and title_column_dic[
+                        tmpcol] == v_key:
+                      worksheet.write(lineindex, tmpcol, v_value)
+                      if tmpcol > max_tmpcol:
+                        max_tmpcol = tmpcol
+                      break
+                # 合计数值
+                countcell_num = SaveDataItem.get_countcell_num(attr_value)
+                if countcell_num is not None:
+                  worksheet.write_number(lineindex, max_tmpcol + 1,
+                                         countcell_num)
+              else:
+                # 含合计列
+                des = SaveDataItem.get_des_contain_countcell(attr_value)
+                if des is not None:
+                  for tmpcol in range(maxlist_index):
+                    if tmpcol in title_column_dic and title_column_dic[
+                        tmpcol] == attr:
+                      worksheet.write(lineindex, tmpcol, des)
+                      break
+                # 合计数值
+                countcell_num = SaveDataItem.get_countcell_num(attr_value)
+                if countcell_num is not None:
+                  worksheet.write_number(lineindex, tmpcol + 1, countcell_num)
+            else:
+              # 无合计列
+              for tmpcol in range(maxlist_index):
+                if tmpcol in title_column_dic and title_column_dic[
+                    tmpcol] == attr:
+                  worksheet.write(lineindex, tmpcol, attr_value)
+                  break
+
       # 行求和
-      for key, value in rowsum_dic.items():
+      for key, value_sditem in rowsum_dic.items():
         sum_itemlist = []
         for tmplie in range(maxlist_index):
           for lie in countcell_list:
             if tmplie == lie:
-              # 合计列内容
+              # 合计列内容 todo:获取合计格子内容
               worksheet.write(lineindex, tmplie, "", count_numcell_format)
-          if isinstance(value, RowSumResult):
-            for needcount_lie in value.item_list:
+          if isinstance(value_sditem, RowSumResult):
+            for needcount_lie in value_sditem.item_list:
               if tmplie == needcount_lie:
                 sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
                 sum_itemlist.append(sumstr)
         # 行求和内容
         sumstr = ",".join(sum_itemlist)
         sumstr = f"=SUM({sumstr})"
-        if isinstance(value, RowSumResult):
-          worksheet.write(lineindex, value.index, sumstr, sum_format)
+        if isinstance(value_sditem, RowSumResult):
+          worksheet.write(lineindex, value_sditem.index, sumstr, sum_format)
 
       # 周求和
       weekcount_key = jsoninfo.get_weekcount_key()
@@ -260,6 +316,7 @@ def create_empty():
           worksheet.write(lineindex, result.result_index, sumstr,
                           month_end_format)
         new_week = True
+
       # 行高
       defaulttitle_height = jsoninfo.get_title_height()
       worksheet.set_row(lineindex, defaulttitle_height)
@@ -268,17 +325,16 @@ def create_empty():
   helper.close_workbook()
 
 
-savedata_dict = {}
-
-
 def read_data():
-  pass
-  # with open(savedata_json_filepath, 'rb') as f:
-  #   jsondic = json.load(f)
-  #   for key, value in jsondic.items():
-  #     sd_item = SaveDataItem(value)
-  #     savedata_dict[key] = sd_item
-  #   print(savedata_dict)
+  with open(savedata_json_filepath, 'rb') as f:
+    jsondic = json.load(f)
+    for key, value in jsondic.items():
+      if key == 'emptyTemplate':
+        empty_template = value
+      else:
+        sd_item = SaveDataItem(empty_template)
+        sd_item.set_data(value)
+        savedata_dict[key] = sd_item
 
 
 def write_data():
@@ -286,5 +342,5 @@ def write_data():
 
 
 if __name__ == "__main__":
+  read_data()
   create_empty()
-  # read_data()
