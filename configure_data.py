@@ -68,10 +68,6 @@ class ConfigureData():
       result = result + 1
     return result
 
-  def get_b_mainmenu_have_secondmenu(self, main_menuname) -> bool:
-    '''通过标题名查看是否有二级标题'''
-    return main_menuname in self.secondTitle
-
   def get_title_height(self):
     '''行高'''
     return self.defaultTitleHeight

@@ -20,15 +20,17 @@ colsum_dic = {}
 # 合计列下标数组
 countcell_list = []
 
-savedata_json_filepath = "./save_data.json"
+savedata_json_filepath = "./save_data_for_test.json"
 savedata_dict = {}
-title_column_dic = {}
+column_title_dic = {}
 
+title_list = []
 config_json_filepath = "./config.json"
 jsoninfo = get_jsondata(config_json_filepath)
 
 
 def rowsum_set_resultindex(key, content):
+  global rowsum_dic
   """
     行求和结果，列下标设置
     """
@@ -40,6 +42,7 @@ def rowsum_set_resultindex(key, content):
 
 
 def rowsum_add_itemindex(key, value):
+  global rowsum_dic
   """
     行求和元素，列下标设置
     """
@@ -51,6 +54,7 @@ def rowsum_add_itemindex(key, value):
 
 
 def colsumdic_callfunc(key, funname, content):
+  global colsum_dic
   """
     列求和字典,列下标设置
     """
@@ -61,6 +65,7 @@ def colsumdic_callfunc(key, funname, content):
 
 
 def get_sumstr(key, startindex, endindex):
+  global colsum_dic
   if key not in colsum_dic:
     colsum_dic[key] = ColSumResult()
   tmp = colsum_dic[key]
@@ -69,13 +74,25 @@ def get_sumstr(key, startindex, endindex):
   return None
 
 
+def get_titleitem_by_name(titlename: str) -> TitleItem:
+  global title_list
+  if title_list is None or len(title_list) == 0:
+    return None
+  for item in title_list:
+    if isinstance(item, TitleItem) and item.name == titlename:
+      return item
+  return None
+
+
 def create_empty():
+  global column_title_dic, title_list
   '''创建空excel模板'''
-  title_column_dic = {}
   excel_savepath = jsoninfo.get_excelpath()
   helper = XlsHelper(jsoninfo, excel_savepath)
   worksheet = helper.get_worksheet(str(c_year))
+
   title_list = jsoninfo.get_titlelist()
+
   rowsum_dickey = jsoninfo.get_rowsum_dickeys()
   colsum_dickey = jsoninfo.get_colsum_dickeys()
 
@@ -95,6 +112,9 @@ def create_empty():
         oldlist_index = listindex
         secondmenu_len = len(secondmenu_list)
         listindex = listindex + secondmenu_len - 1
+        # 一级菜单设置列下标
+        for i in range(oldlist_index, listindex + 1):
+          titleitem.set_columindex(i)
         # 一级菜单合并-行列行列
         worksheet.merge_range(lineindex, oldlist_index, lineindex, listindex,
                               value_sditem, titleformat)
@@ -103,14 +123,16 @@ def create_empty():
         for tmplie in range(secondmenu_len):
           new_col = oldlist_index + tmplie
           #标题列下标字典
-          title_column_dic[new_col] = titleitem.get_seclist_name_by_index(
+          column_title_dic[new_col] = titleitem.get_seclist_name_by_index(
               tmplie)
           worksheet.write(lineindex + 1, new_col,
                           titleitem.get_seclist_showname_by_index(tmplie),
                           sectitle_format)
       else:
         #标题列下标字典
-        title_column_dic[listindex] = titleitem.name
+        column_title_dic[listindex] = titleitem.name
+        # 一级菜单设置列下标
+        titleitem.set_columindex(listindex)
         worksheet.merge_range(lineindex, listindex, lineindex + 1, listindex,
                               value_sditem, titleformat)
 
@@ -222,41 +244,46 @@ def create_empty():
       for key, value_sditem in savedata_dict.items():
         if key_ymd == key:
           for attr, attr_value in value_sditem.__dict__.items():
+            titleitem = get_titleitem_by_name(attr)
+            if titleitem is None:
+              print(f'[error]这里出现意外的空标题，请检查列标题名{attr}')
+              break
             if isinstance(attr_value, dict):
-              # 含合计列&有二级列表
-              bhave_sec = jsoninfo.get_b_mainmenu_have_secondmenu(attr)
+              # 合计值
+              countcell_num = SaveDataItem.get_countcell_num(attr_value)
+              # 有二级列表&有合计列 如：餐饮
+              bhave_sec = titleitem.get_is_seclist()
               if bhave_sec:
-                max_tmpcol = 0
                 for v_key, v_value in attr_value.items():
                   for tmpcol in range(maxlist_index):
-                    if tmpcol in title_column_dic and title_column_dic[
+                    if tmpcol in column_title_dic and column_title_dic[
                         tmpcol] == v_key:
                       worksheet.write(lineindex, tmpcol, v_value)
-                      if tmpcol > max_tmpcol:
-                        max_tmpcol = tmpcol
                       break
-                # 合计数值
-                countcell_num = SaveDataItem.get_countcell_num(attr_value)
                 if countcell_num is not None:
-                  worksheet.write_number(lineindex, max_tmpcol + 1,
-                                         countcell_num)
+                  coutcell_colindex = titleitem.get_countcell_col_index()
+                  worksheet.write_number(lineindex, coutcell_colindex,
+                                         countcell_num, count_numcell_format)
               else:
-                # 含合计列
+                # 一级列表
                 des = SaveDataItem.get_des_contain_countcell(attr_value)
-                if des is not None:
-                  for tmpcol in range(maxlist_index):
-                    if tmpcol in title_column_dic and title_column_dic[
-                        tmpcol] == attr:
+                for tmpcol in range(maxlist_index):
+                  if tmpcol in column_title_dic and column_title_dic[
+                      tmpcol] == attr:
+                    # 一级列表&有合计列 如：生活用品、交通等
+                    if des is not None:
                       worksheet.write(lineindex, tmpcol, des)
-                      break
-                # 合计数值
-                countcell_num = SaveDataItem.get_countcell_num(attr_value)
-                if countcell_num is not None:
-                  worksheet.write_number(lineindex, tmpcol + 1, countcell_num)
+                    # 一级列表，内容直接就是合计 如：日必须，日合计
+                    if countcell_num is not None:
+                      coutcell_colindex = titleitem.get_countcell_col_index()
+                      worksheet.write_number(lineindex, coutcell_colindex,
+                                             countcell_num,
+                                             count_numcell_format)
+                    break
             else:
-              # 无合计列
+              # 无额外列，净内容 如：todo,havedone
               for tmpcol in range(maxlist_index):
-                if tmpcol in title_column_dic and title_column_dic[
+                if tmpcol in column_title_dic and column_title_dic[
                     tmpcol] == attr:
                   worksheet.write(lineindex, tmpcol, attr_value)
                   break
@@ -265,10 +292,10 @@ def create_empty():
       for key, value_sditem in rowsum_dic.items():
         sum_itemlist = []
         for tmplie in range(maxlist_index):
-          for lie in countcell_list:
-            if tmplie == lie:
-              # 合计列内容 todo:获取合计格子内容
-              worksheet.write(lineindex, tmplie, "", count_numcell_format)
+          # for lie in countcell_list:
+          #   if tmplie == lie:
+          #     # 合计列内容,空表格的时候写入格式用的
+          #     worksheet.write(lineindex, tmplie, "", count_numcell_format)
           if isinstance(value_sditem, RowSumResult):
             for needcount_lie in value_sditem.item_list:
               if tmplie == needcount_lie:
@@ -325,7 +352,7 @@ def create_empty():
   helper.close_workbook()
 
 
-def read_data():
+def read_savedata():
   with open(savedata_json_filepath, 'rb') as f:
     jsondic = json.load(f)
     for key, value in jsondic.items():
@@ -337,10 +364,6 @@ def read_data():
         savedata_dict[key] = sd_item
 
 
-def write_data():
-  pass
-
-
 if __name__ == "__main__":
-  read_data()
+  read_savedata()
   create_empty()

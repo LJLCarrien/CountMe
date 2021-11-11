@@ -1,5 +1,3 @@
-
-
 # CountMe
 
 ## 背景
@@ -653,6 +651,58 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 }
 ```
 
+## 存储数据
+
+参考：save_data.json
+
+"emptyTemplate":为保存数据对象类生成对应属性用的，千万不要删除。
+
+```json
+{
+    "emptyTemplate": {
+        "todo": "",
+        "havedone": "",
+        "diet": {
+            "breakfast": "",
+            "lunch": "",
+            "dinner": "",
+            "nightsnack": "",
+            "snacksdrinks": "",
+            "takeoutfood": "",
+            "countcell": null
+        },
+        "dailyuse": {
+            "des": "",
+            "countcell": null
+        },
+        "traffic": {
+            "des": "",
+            "countcell": null
+        },
+        "housing": {
+            "des": "",
+            "countcell": null
+        },
+        "daymustcoust": {
+            "countcell": 0
+        },
+        "entertainment": {
+            "des": "",
+            "countcell": null
+        },
+        "shopping": {
+            "des": "",
+            "countcell": null
+        },
+        "daycoust": {
+            "countcell": 0
+        }
+    }
+}
+```
+
+测试数据文件（具体参考：save_data_for_test.json）
+
 
 
 ## 计划
@@ -816,8 +866,27 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
 ### 第二阶段：数据存储
 
-- [ ] todo:数据保存（json格式)
+目前设定是：python读取json数据，生成excel文件。
+
+由另一个客户端/应用操作后，保存生成json数据。（这是后面的事情了，不在这里考虑）
+
+- [x] 数据保存（json格式)
+  暂时是手动生成的
+- [x] 读取save_data.json，写入xlsx
 
 ### 第三阶段：数据统计
 
 - [ ] todo:折线图等,得出结论
+
+  
+
+## Q&A 
+
+### 为什么要做这个项目直接操作excel不好吗？
+
+​	可以是可以，但是光操作excel没意思。我对格式有要求，太丑我看不下去，但是如果每月、每年都要不时搞格式，会让我懒得开始。每每在做重复的格式操作的瞬间，我都在心里吐槽“害，好无聊啊，我只想管记录，什么时候才可以用代码生成啊”。
+
+​	用代码生成的好处是，只需要留有一份数据（此处指json文件），就可以生成格式符合自己预期的excel文件。我已经纯用excel记录日常好几年了，很多时候我都好想对比一下自己几年来的数据，但是我又很懒，光是看数据我头又很大，几个excel之间操作我也觉得无聊又麻烦，如果每年都要这样操作一下，光是想想都开始劝退，可是这个对比的想法又不断的生根发芽，如果有人可以用帮我将几年的数据用图表展示出来，一年里每个月的消费用图表统计下，就好了，所以那个人就是我了。
+
+​	我希望excel只是作为展示最终结果，操作时使用更加美观简洁的界面专注在记录就好。从这个操作界面到excel展示要做的事情就全部交给python了。虽然我有考虑过要不要做excel内容由python直接生成json，但是我个人想摆脱excel操作才做的这些事情，目前没有强而有力的理由，不做的理由倒是蛮充分的，所以还是不实现这个功能了。
+

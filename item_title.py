@@ -28,10 +28,34 @@ class TitleItem():
     self.bgcolor = None
     self.width = None
     self.height = None
-    self.columnindex = -1
+    # 列下标
+    self.columnindex = []
 
   def __init__(self):
     self.reset()
+
+  def set_columindex(self, index):
+    # 设置列下标
+    self.columnindex.append(index)
+
+  def get_countcell_col_index(self):
+    '''获取合计列下标'''
+    bhave_countcell = self.get_countcell_value() is not None
+    bhave_seclist = len(self.columnindex) > 1
+    if bhave_seclist:
+      if bhave_countcell:
+        # 二级列标题&有合计,最后一个元素列+1，如餐饮
+        return self.columnindex[-1] + 1
+      else:
+        print('目前未有该逻辑：二级列表，没有合计列')
+        return 0
+    else:
+      if bhave_countcell:
+        # 一级列标题，有合计列，如生活用品、交通等
+        return self.columnindex[0] + 1
+      else:
+        # 一级列标题，内容即合计，如日必须，日合计
+        return self.columnindex[0]
 
   def set_data(self, confdic: dict, info: dict):
     # 定制格式
@@ -84,6 +108,12 @@ class TitleItem():
 
   def get_seclist(self):
     return self.sec_list
+
+  def get_is_seclist(self) -> bool:
+    '''是否有二级列表'''
+    if self.sec_list is None:
+      return False
+    return len(self.sec_list) > 0
 
   def get_seclist_name_by_index(self, index):
     return self.sec_list[index]['name']

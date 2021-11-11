@@ -3,6 +3,7 @@ from item_format import FormatItem
 from item_title import TitleItem, TitleType
 import xlsxwriter
 from xlsxwriter.format import Format
+from xlsxwriter.utility import xl_rowcol_to_cell, xl_cell_to_rowcol
 
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
@@ -27,11 +28,20 @@ class XlsHelper():
 
   @staticmethod
   def get_rowcol_2_str(row, col):
-    '''行列转字符串
-        eq: 0,0->A1 ; 1,0->A2 ; 0，1->B1 ;
-        '''
-    result = f"{chr(ord('A') + col)}{row + 1}"
+    '''行列转字符串 
+    eq: 0,0->A1 ; 1,0->A2 ; 0，1->B1 ;
+    '''
+    # result = f"{chr(ord('A') + col)}{row + 1}"
+    result = xl_rowcol_to_cell(row, col)
     return result
+
+  @staticmethod
+  def get_str_2_rowcol(str):
+    '''字符串转行列
+    xl_cell_to_rowcol('A1')    # (0, 0)
+    '''
+    (row, col) = xl_cell_to_rowcol(str)
+    return (row, col)
 
   def get_worksheet(self, sheetname: str):
     index = self.workbook._get_sheet_index(sheetname)
