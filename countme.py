@@ -3,6 +3,7 @@ from datetime import datetime
 import calendar
 import json
 from configure_data import ConfigureData
+from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
 from item_savedata import SaveDataItem
 from sum_colsum import ColSumResult
 from sum_rowsum import RowSumResult
@@ -26,7 +27,6 @@ column_title_dic = {}
 
 title_list = []
 config_json_filepath = "./config.json"
-jsoninfo = get_jsondata(config_json_filepath)
 
 
 def rowsum_set_resultindex(key, content):
@@ -84,11 +84,8 @@ def get_titleitem_by_name(titlename: str) -> TitleItem:
   return None
 
 
-def create_empty():
+def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
   global column_title_dic, title_list
-  '''创建空excel模板'''
-  excel_savepath = jsoninfo.get_excelpath()
-  helper = XlsHelper(jsoninfo, excel_savepath)
   worksheet = helper.get_worksheet(str(c_year))
 
   title_list = jsoninfo.get_titlelist()
@@ -349,8 +346,6 @@ def create_empty():
       worksheet.set_row(lineindex, defaulttitle_height)
       lineindex = lineindex + 1
 
-  helper.close_workbook()
-
 
 def read_savedata():
   with open(savedata_json_filepath, 'rb') as f:
@@ -364,6 +359,78 @@ def read_savedata():
         savedata_dict[key] = sd_item
 
 
+def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
+  '''分析结果'''
+  worksheet = helper.get_worksheet(f"{str(c_year)}汇总")
+
+  rowlist = jsoninfo.get_analysis_rowtitle_list()
+  row_len = len(rowlist)
+  collist = jsoninfo.get_analysis_coltitle_list()
+  col_len = len(collist)
+  row_cur = col_cur = 0
+  # 每个月内容行数
+  row_content = 0
+  col_content = 0
+  # 每个月之间的间距
+  row_interval = 1
+  for m in range(max_month):
+    worksheet.write(row_cur, col_cur, f"{m+1}月")
+    # 列标题
+    for col_index in range(col_len):
+      item = collist[col_index]
+      if isinstance(item, ColAnalysisTitleItem):
+        titleformat = helper.get_analysis_titleitem_format(item)
+        # 避开第0列
+        col_need = col_index + 1
+        worksheet.write(row_cur, col_need, item.showname, titleformat)
+        # 列标题对应内容
+        is_handle_itemcell = item.get_isneed_handle_itemcell()
+        if is_handle_itemcell:
+          itemcellformat = helper.get_analysis_itemcell_format(item)
+          for r in range(row_len):
+            if r == row_len - 1:
+              worksheet.write_number(row_cur + r + 1, col_need, 0,
+                                     itemcellformat)
+            else:
+              worksheet.write(row_cur + r + 1, col_need, None, itemcellformat)
+    if row_cur == 0:
+      # 每月列数=列标题数+行标题占的1列
+      col_content = col_need + 1
+
+    # 行标题
+    for row_index in range(row_len):
+      item = rowlist[row_index]
+      if isinstance(item, RowAnalysisTitleItem):
+        titleformat = helper.get_analysis_titleitem_format(item)
+        # 避开第0行
+        row_need = row_cur + row_index + 1
+        worksheet.write(row_need, col_cur, item.showname, titleformat)
+        # 行标题对应内容
+        is_handle_itemcell = item.get_isneed_handle_itemcell()
+        if is_handle_itemcell:
+          itemcellformat = helper.get_analysis_itemcell_format(item)
+          for c in range(col_len):
+            if c < col_content - 2:
+              if c == col_content - 3:
+                worksheet.write(row_need, c + 1, None, itemcellformat)
+              else:
+                worksheet.write_number(row_need, c + 1, 0, itemcellformat)
+
+    if row_cur == 0:
+      # 每月行数=行标题数+列标题占的1行
+      row_content = row_need + 1
+
+    row_cur = row_cur + row_content + row_interval
+    col_index = 0
+
+
 if __name__ == "__main__":
+  jsoninfo = get_jsondata(config_json_filepath)
+  excel_savepath = jsoninfo.get_excelpath()
+  helper = XlsHelper(jsoninfo, excel_savepath)
+
   read_savedata()
-  create_empty()
+  create_empty(jsoninfo, helper)
+  write_analysis(jsoninfo, helper)
+
+  helper.close_workbook()

@@ -2,6 +2,7 @@ from typing import Any
 
 import xlsxwriter
 from xlsxwriter.format import Format
+from xlsxwriter.workbook import Workbook
 
 
 class FormatItem():
@@ -18,6 +19,8 @@ class FormatItem():
     self.fontcolor = jsonDic["defaultFontColor"]
     self.bgcolor = jsonDic["defaultBgColor"]
     self.numformat = None
+    self.item_fontcolor = None
+    self.item_bgcolor = None
     if info is not None:
       self.set_data(info)
 
@@ -32,7 +35,7 @@ class FormatItem():
     else:
       print(f"item_format setData 未支持该类型: {type(info)}")
 
-  def get_format(self, workbook: xlsxwriter.Workbook) -> Format:
+  def get_format(self, workbook: Workbook) -> Format:
     result_format = workbook.add_format()
     if self.numformat is not None:
       result_format.set_num_format(self.numformat)
@@ -47,3 +50,14 @@ class FormatItem():
     if self.bgcolor is not None:
       result_format.set_bg_color(self.bgcolor)
     return result_format
+
+  def get_itemcell_format(self, workbook: Workbook) -> Format:
+    '''获取行/列标题的列格子内容格式'''
+    format = self.get_format(workbook)
+    if format is not None:
+      if self.item_fontcolor is not None:
+        format.set_font_color(self.item_fontcolor)
+      if self.item_bgcolor is not None:
+        format.set_bg_color(self.item_bgcolor)
+      self.itemformat = format
+    return format

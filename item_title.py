@@ -20,7 +20,7 @@ class TitleItem():
     self.showname = ""
     self.sec_list = None
     # 标题默认格式
-    self.item_format: FormatItem = None
+    self.formatitem: FormatItem = None
     # 标题定制格式
     self.fontsize = None
     self.fontname = None
@@ -60,7 +60,7 @@ class TitleItem():
   def set_data(self, confdic: dict, info: dict):
     # 定制格式
     for key, value in info.items():
-      if key == 'item_format':
+      if key == 'formatitem':
         print("{key} 为 TitleItem 保留默认格式属性字段,不支持在 title 配置")
       elif key == 'secList':
         print("{key} 为 TitleItem 保留默认格式属性字段,不支持在 secList 配置")
@@ -86,8 +86,8 @@ class TitleItem():
                  type: TitleType = TitleType.MAIN) -> Format:
     # 默认格式
     f_item = self.get_title_defaultformat_by_type(confdic, type)
-    self.item_format = f_item
-    format = self.item_format.get_format(workbook)
+    self.formatitem = f_item
+    format = self.formatitem.get_format(workbook)
     if self.fontsize is not None:
       format.set_font_size(self.fontsize)
     if self.fontname is not None:

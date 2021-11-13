@@ -1,5 +1,6 @@
 """数据配置管理类"""
 import json
+from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
 from item_title import TitleItem
 
 
@@ -31,6 +32,14 @@ class ConfigureData():
           titleitem = TitleItem()
           titleitem.set_data(self.jsondic, item)
           resultlist.append(titleitem)
+        elif keyname == 'analysis_coltitle':
+          coltitleitem = ColAnalysisTitleItem()
+          coltitleitem.set_data(item)
+          resultlist.append(coltitleitem)
+        elif keyname == 'analysis_rowtitle':
+          coltitleitem = RowAnalysisTitleItem()
+          coltitleitem.set_data(item)
+          resultlist.append(coltitleitem)
         else:
           print(f'{keyname}未支持')
       else:
@@ -117,3 +126,11 @@ class ConfigureData():
   def get_freezeline_detail(self) -> str:
     '''冻结行模式具体内容，月份时是1-12，行数是2到正无穷'''
     return self.freezeLineMode['detail']
+
+  def get_analysis_rowtitle_list(self) -> list:
+    '''分析结果-行菜单list'''
+    return self.analysis_rowtitle
+
+  def get_analysis_coltitle_list(self) -> list:
+    '''分析结果-列菜单list'''
+    return self.analysis_coltitle

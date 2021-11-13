@@ -1,4 +1,5 @@
 from configure_data import ConfigureData
+from item_analysis_title import AnalysisTitleItem
 from item_format import FormatItem
 from item_title import TitleItem, TitleType
 import xlsxwriter
@@ -94,6 +95,20 @@ class XlsHelper():
     '''月统计格式'''
     monthend_format = self.get_format('monthEnd')
     return monthend_format
+
+  def get_analysis_titleitem_format(self,
+                                    iteminfo: AnalysisTitleItem) -> Format:
+    '''分析结果-行/列标题格式'''
+    workbook = self.workbook
+    format = iteminfo.get_format(workbook, self.configure.jsondic)
+    return format
+
+  def get_analysis_itemcell_format(self,
+                                   iteminfo: AnalysisTitleItem) -> Format:
+    '''分析结果-行/列标题对应行/列内容格式'''
+    workbook = self.workbook
+    format = iteminfo.get_itemcell_format(workbook)
+    return format
 
 
 def get_jsondata(json_file_path) -> ConfigureData:

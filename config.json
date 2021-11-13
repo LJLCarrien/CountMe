@@ -45,6 +45,16 @@
 			"fontsize": 16,
 			"fontcolor": "#a12f2f",
 			"bgcolor": "#dca09e"
+		},
+		"analysis_col_title": {
+			"bold": true,
+			"item_fontcolor": null,
+			"item_bgcolor": null
+		},
+		"analysis_row_title": {
+			"bold": false,
+			"item_fontcolor": null,
+			"item_bgcolor": null
 		}
 	},
 	"title": [
@@ -189,5 +199,105 @@
 				"showname": "外卖"
 			}
 		]
-	}
+	},
+	"analysis_coltitle": [
+		{
+			"name": "firstweek",
+			"showname": "第一周",
+			"fontcolor": "white",
+			"bgcolor": "#5B9BD5"
+		},
+		{
+			"name": "secondweek",
+			"showname": "第二周",
+			"fontcolor": "white",
+			"bgcolor": "#ED7D31"
+		},
+		{
+			"name": "thirdweek",
+			"showname": "第三周",
+			"fontcolor": "white",
+			"bgcolor": "#A5A5A5"
+		},
+		{
+			"name": "fourthweek",
+			"showname": "第四周",
+			"fontcolor": "white",
+			"bgcolor": "#FFC000"
+		},
+		{
+			"name": "fifthweek",
+			"showname": "第五周",
+			"fontcolor": "white",
+			"bgcolor": "#4472C0"
+		},
+		{
+			"name": "sixthweek",
+			"showname": "第六周",
+			"fontcolor": "white",
+			"bgcolor": "#70AD47"
+		},
+		{
+			"name": "week_sparkline",
+			"showname": "周图示"
+		},
+		{
+			"name": "monthcoust",
+			"showname": "月合计",
+			"fontcolor": "white",
+			"bgcolor": "#B05574",
+			"item_fontcolor": "white",
+			"item_bgcolor": "#D29DAF"
+		}
+	],
+	"analysis_rowtitle": [
+		{
+			"name": "monday",
+			"showname": "周一",
+			"format_cover_col": true
+		},
+		{
+			"name": "tuesday",
+			"showname": "周二",
+			"format_cover_col": true
+		},
+		{
+			"name": "wednesday",
+			"showname": "周三",
+			"format_cover_col": true
+		},
+		{
+			"name": "thursday",
+			"showname": "周四",
+			"format_cover_col": true
+		},
+		{
+			"name": "friday",
+			"showname": "周五",
+			"format_cover_col": true
+		},
+		{
+			"name": "saturday",
+			"showname": "周六",
+			"format_cover_col": true
+		},
+		{
+			"name": "sunday",
+			"showname": "周日",
+			"format_cover_col": true
+		},
+		{
+			"name": "week_sparkline",
+			"showname": "周图示",
+			"format_cover_col": true
+		},
+		{
+			"name": "weekcount",
+			"showname": "周合计",
+			"fontcolor": "white",
+			"bgcolor": "#7C518B",
+			"item_bgcolor": "#C2A7CC",
+			"format_cover_col": false
+		}
+	]
 }
