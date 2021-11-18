@@ -7,10 +7,10 @@ from item_format import FormatItem
 
 class TitleType(Enum):
   """标题类型"""
-  '''主标题'''
   MAIN = 0
-  '''二级标题'''
+  '''主标题'''
   SEC = 1
+  '''二级标题'''
 
 
 class TitleItem():
@@ -40,7 +40,7 @@ class TitleItem():
 
   def get_countcell_col_index(self):
     '''获取合计列下标'''
-    bhave_countcell = self.get_countcell_value() is not None
+    bhave_countcell = self.get_addcountcell_value() is not None
     bhave_seclist = len(self.columnindex) > 1
     if bhave_seclist:
       if bhave_countcell:
@@ -131,12 +131,19 @@ class TitleItem():
   def get_title_width(self):
     return self.width
 
-  def get_countcell_value(self):
-    '''合计'''
-    result = hasattr(self, 'countCell')
+  def get_addcountcell_value(self):
+    '''增加合计列标题'''
+    result = hasattr(self, 'addCountCell')
     if result:
-      return self.countCell
+      return self.addCountCell
     return None
+
+  def get_countcell(self) -> bool:
+    '''是否用于专门用于求和的数字列'''
+    result = hasattr(self, 'countcell')
+    if result:
+      return self.countcell
+    return False
 
   def get_rowsum_dicvalue(self):
     '''行求和'''

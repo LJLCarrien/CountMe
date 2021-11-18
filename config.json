@@ -87,7 +87,7 @@
 			"name": "diet",
 			"showname": "餐饮",
 			"secondSort": "diet",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fe4365",
 			"dayMustCoust": true
@@ -95,7 +95,7 @@
 		{
 			"name": "dailyuse",
 			"showname": "生活用品",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fc9d9a",
 			"dayMustCoust": true
@@ -103,7 +103,7 @@
 		{
 			"name": "traffic",
 			"showname": "交通",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f9cdad",
 			"dayMustCoust": true
@@ -111,7 +111,7 @@
 		{
 			"name": "housing",
 			"showname": "住房",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#c8c8a9",
 			"dayMustCoust": true
@@ -122,12 +122,13 @@
 			"rowSumDic": "dayMustCoust",
 			"fontcolor": "white",
 			"bgcolor": "#83af9b",
-			"dayCoust": true
+			"dayCoust": true,
+			"countcell": true
 		},
 		{
 			"name": "entertainment",
 			"showname": "娱乐",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#8a977b",
 			"dayCoust": true
@@ -135,7 +136,7 @@
 		{
 			"name": "shopping",
 			"showname": "购物",
-			"countCell": "合计",
+			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f4cf00",
 			"dayCoust": true
@@ -147,21 +148,24 @@
 			"fontcolor": "white",
 			"bgcolor": "#dc5712",
 			"weekCoust": true,
-			"monthCoust": true
+			"monthCoust": true,
+			"countcell": true
 		},
 		{
 			"name": "weekcoust",
 			"showname": "周合计",
 			"fontcolor": "white",
 			"bgcolor": "#b05574",
-			"colSumDic": "weekCoust"
+			"colSumDic": "weekCoust",
+			"countcell": true
 		},
 		{
 			"name": "monthcoust",
 			"showname": "月合计",
 			"fontcolor": "white",
 			"bgcolor": "#dca09e",
-			"colSumDic": "monthCoust"
+			"colSumDic": "monthCoust",
+			"countcell": true
 		}
 	],
 	"rowSumDicKey": [
@@ -205,37 +209,43 @@
 			"name": "firstweek",
 			"showname": "第一周",
 			"fontcolor": "white",
-			"bgcolor": "#5B9BD5"
+			"bgcolor": "#5B9BD5",
+			"contenttype": "data"
 		},
 		{
 			"name": "secondweek",
 			"showname": "第二周",
 			"fontcolor": "white",
-			"bgcolor": "#ED7D31"
+			"bgcolor": "#ED7D31",
+			"contenttype": "data"
 		},
 		{
 			"name": "thirdweek",
 			"showname": "第三周",
 			"fontcolor": "white",
-			"bgcolor": "#A5A5A5"
+			"bgcolor": "#A5A5A5",
+			"contenttype": "data"
 		},
 		{
 			"name": "fourthweek",
 			"showname": "第四周",
 			"fontcolor": "white",
-			"bgcolor": "#FFC000"
+			"bgcolor": "#FFC000",
+			"contenttype": "data"
 		},
 		{
 			"name": "fifthweek",
 			"showname": "第五周",
 			"fontcolor": "white",
-			"bgcolor": "#4472C0"
+			"bgcolor": "#4472C0",
+			"contenttype": "data"
 		},
 		{
 			"name": "sixthweek",
 			"showname": "第六周",
 			"fontcolor": "white",
-			"bgcolor": "#70AD47"
+			"bgcolor": "#70AD47",
+			"contenttype": "data"
 		},
 		{
 			"name": "week_sparkline",
@@ -254,37 +264,44 @@
 		{
 			"name": "monday",
 			"showname": "周一",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "tuesday",
 			"showname": "周二",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "wednesday",
 			"showname": "周三",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "thursday",
 			"showname": "周四",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "friday",
 			"showname": "周五",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "saturday",
 			"showname": "周六",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "sunday",
 			"showname": "周日",
-			"format_cover_col": true
+			"format_cover_col": true,
+			"contenttype": "data"
 		},
 		{
 			"name": "week_sparkline",

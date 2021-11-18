@@ -375,19 +375,19 @@ pip install xlsxwriter
 	"title": [
 		{
 			"name": "餐饮",
-			"countCell": "合计",
+			"addCountCell": "合计",
 		},
 		{
 			"name": "生活用品",
-			"countCell": "合计",
+			"addCountCell": "合计",
 		},
 		{
 			"name": "交通",
-			"countCell": "合计",
+			"addCountCell": "合计",
 		},
 		{
 			"name": "住房",
-			"countCell": "合计",
+			"addCountCell": "合计",
 		}
 	]
 }
@@ -547,22 +547,22 @@ pip install xlsxwriter
 	"title": [
 		{
 			"name": "餐饮",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayMustCoust": true
 		},
 		{
 			"name": "生活用品",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayMustCoust": true
 		},
 		{
 			"name": "交通",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayMustCoust": true
 		},
 		{
 			"name": "住房",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayMustCoust": true
 		},
 		{
@@ -589,12 +589,12 @@ pip install xlsxwriter
 		},
 		{
 			"name": "娱乐",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayCoust": true
 		},
 		{
 			"name": "购物",
-            "countCell": "合计",
+            "addCountCell": "合计",
 			"dayCoust": true
 		},
 		{
@@ -652,54 +652,6 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 ```
 
 ## 存储数据
-
-参考：save_data.json
-
-"emptyTemplate":为保存数据对象类生成对应属性用的，千万不要删除。
-
-```json
-{
-    "emptyTemplate": {
-        "todo": "",
-        "havedone": "",
-        "diet": {
-            "breakfast": "",
-            "lunch": "",
-            "dinner": "",
-            "nightsnack": "",
-            "snacksdrinks": "",
-            "takeoutfood": "",
-            "countcell": null
-        },
-        "dailyuse": {
-            "des": "",
-            "countcell": null
-        },
-        "traffic": {
-            "des": "",
-            "countcell": null
-        },
-        "housing": {
-            "des": "",
-            "countcell": null
-        },
-        "daymustcoust": {
-            "countcell": 0
-        },
-        "entertainment": {
-            "des": "",
-            "countcell": null
-        },
-        "shopping": {
-            "des": "",
-            "countcell": null
-        },
-        "daycoust": {
-            "countcell": 0
-        }
-    }
-}
-```
 
 测试数据文件（具体参考：save_data_for_test.json）
 
@@ -796,7 +748,7 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
       格式优先级：全局默认格式 < **合计**局部默认格式（countNumCell）
 
-      关键字：countCell
+      关键字：addCountCell
 
     - [x] 行求和
 
@@ -872,7 +824,11 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
 - [x] 数据保存（json格式)
   暂时是手动生成的
-- [x] 读取save_data.json，写入xlsx
+- [x] json->dict->DataItem->excel 1->excel 2
+  读取save_data.json，写入excel创建详细的表格，统计图表
+
+
+
 
 ### 第三阶段：数据统计
 

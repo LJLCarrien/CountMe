@@ -9,10 +9,10 @@ from item_format import FormatItem
 
 class AnalysisTitleType(Enum):
   '''结果分析-标题类型'''
-  '''列标题'''
   COL = 1
-  '''行标题'''
+  '''列标题'''
   ROW = 2
+  '''行标题'''
 
 
 class AnalysisTitleItem():
@@ -32,6 +32,7 @@ class AnalysisTitleItem():
     self.formatitem: FormatItem = None
     self.format: Format = None
     self.cellformat: Format = None
+    self.contenttype = None
 
   def set_data(self, info: dict):
     for key, value in info.items():
@@ -81,6 +82,10 @@ class AnalysisTitleItem():
 
   def get_isneed_handle_itemcell(self):
     return self.item_bgcolor is not None or self.item_fontcolor is not None
+
+  def get_is_data(self):
+    '''分析表格的输入数据'''
+    return self.contenttype == "data"
 
 
 class ColAnalysisTitleItem(AnalysisTitleItem):

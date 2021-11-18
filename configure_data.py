@@ -1,6 +1,6 @@
 """数据配置管理类"""
 import json
-from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
+from item_analysis_title import AnalysisTitleItem, AnalysisTitleType, ColAnalysisTitleItem, RowAnalysisTitleItem
 from item_title import TitleItem
 
 
@@ -128,9 +128,33 @@ class ConfigureData():
     return self.freezeLineMode['detail']
 
   def get_analysis_rowtitle_list(self) -> list:
-    '''分析结果-行菜单list'''
+    '''分析表格-行菜单list'''
     return self.analysis_rowtitle
 
   def get_analysis_coltitle_list(self) -> list:
-    '''分析结果-列菜单list'''
+    '''分析表格-列菜单list'''
     return self.analysis_coltitle
+
+  def get_analysis_title_data_num(self, type: AnalysisTitleType) -> int:
+    '''分析表格-输入数据的行数 如：周一、周二...周日'''
+    '''分析表格-输入数据的列数 如：第一周、第二周...第六周'''
+    result = 0
+    tmplist = []
+    if type == AnalysisTitleType.COL:
+      tmplist = self.get_analysis_coltitle_list()
+    elif type == AnalysisTitleType.ROW:
+      tmplist = self.get_analysis_rowtitle_list()
+    if len(tmplist) == 0:
+      return 0
+    for item in tmplist:
+      if isinstance(item, AnalysisTitleItem):
+        if item.get_is_data():
+          result = result + 1
+    return result
+
+  def get_analysis_data_row_col_num(self):
+    '''行标题行数：周一、周二...周日'''
+    row_num = self.get_analysis_title_data_num(AnalysisTitleType.ROW)
+    '''列标题列数：第一周、第二周...第六周'''
+    col_num = self.get_analysis_title_data_num(AnalysisTitleType.COL)
+    return [row_num, col_num]

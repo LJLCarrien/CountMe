@@ -3,13 +3,15 @@ from datetime import datetime
 import calendar
 import json
 from configure_data import ConfigureData
+from item_analysis_month_data import AnalysisMonthDataItem
 from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
-from item_savedata import SaveDataItem
+from item_data import DataItem
 from sum_colsum import ColSumResult
 from sum_rowsum import RowSumResult
 from item_title import TitleItem
 from helper_xlshelper import XlsHelper, get_jsondata
 import operator
+import copy
 
 obj = calendar.Calendar()
 
@@ -27,6 +29,8 @@ column_title_dic = {}
 
 title_list = []
 config_json_filepath = "./config.json"
+
+analy_monthdata_list = []
 
 
 def rowsum_set_resultindex(key, content):
@@ -84,7 +88,7 @@ def get_titleitem_by_name(titlename: str) -> TitleItem:
   return None
 
 
-def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
+def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
   global column_title_dic, title_list
   worksheet = helper.get_worksheet(str(c_year))
 
@@ -97,6 +101,8 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
   listindex = 0  # 列下标
   breeze_listindex = -1  # 冻结列下标
 
+  empty_dataItem = DataItem()
+
   for titleitem in title_list:
     if isinstance(titleitem, TitleItem):
       value_sditem = titleitem.showname
@@ -105,7 +111,12 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
 
       secondmenu_list = titleitem.get_seclist()
       ishave_sectitle = secondmenu_list is not None
+
+      addcountcell_value = titleitem.get_addcountcell_value()
+      is_addcountcell = addcountcell_value is not None
+      is_countcell = titleitem.get_countcell()
       if ishave_sectitle:
+
         oldlist_index = listindex
         secondmenu_len = len(secondmenu_list)
         listindex = listindex + secondmenu_len - 1
@@ -120,11 +131,12 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
         for tmplie in range(secondmenu_len):
           new_col = oldlist_index + tmplie
           #标题列下标字典
-          column_title_dic[new_col] = titleitem.get_seclist_name_by_index(
-              tmplie)
-          worksheet.write(lineindex + 1, new_col,
-                          titleitem.get_seclist_showname_by_index(tmplie),
+          sectitle_name = titleitem.get_seclist_name_by_index(tmplie)
+          sectitle_showname = titleitem.get_seclist_showname_by_index(tmplie)
+          column_title_dic[new_col] = sectitle_name
+          worksheet.write(lineindex + 1, new_col, sectitle_showname,
                           sectitle_format)
+          empty_dataItem.set_data_property(titleitem.name, sectitle_name)
       else:
         #标题列下标字典
         column_title_dic[listindex] = titleitem.name
@@ -132,6 +144,13 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
         titleitem.set_columindex(listindex)
         worksheet.merge_range(lineindex, listindex, lineindex + 1, listindex,
                               value_sditem, titleformat)
+        if is_addcountcell:
+          empty_dataItem.set_data_property(titleitem.name)
+        else:
+          if is_countcell:
+            empty_dataItem.set_data_property_countcell(titleitem.name)
+          else:
+            empty_dataItem.set_data(titleitem.name)
 
       # 列宽行高
       title_width = titleitem.get_title_width()
@@ -144,9 +163,10 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
       if is_freeze:
         breeze_listindex = listindex
       # 合计
-      countcell_value = titleitem.get_countcell_value()
-      is_countcell = countcell_value is not None
-      if is_countcell:
+
+      if is_addcountcell:
+        empty_dataItem.set_data_property_countcell(titleitem.name)
+
         listindex = listindex + 1
         countcell_list.append(listindex)
         worksheet.merge_range(
@@ -154,7 +174,7 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
             listindex,
             lineindex + 1,
             listindex,
-            countcell_value,
+            addcountcell_value,
             titleformat,
         )
 
@@ -180,6 +200,8 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
       if is_colsum_dicresult_here:
         colsumdic_callfunc(colsumdic_value, "set_resultindex", listindex)
       listindex = listindex + 1
+
+  # print(empty_dataItem)
 
   if listindex == 0:
     maxlist_index = listindex
@@ -238,16 +260,20 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
 
       #写入数据
       key_ymd = year_month_day.replace('-', '/')
+      dataItem = copy.deepcopy(empty_dataItem)
+      dataItem.date = key_ymd
       for key, value_sditem in savedata_dict.items():
-        if key_ymd == key:
-          for attr, attr_value in value_sditem.__dict__.items():
+        if key_ymd == key and isinstance(value_sditem, dict):
+          for attr, attr_value in value_sditem.items():
             titleitem = get_titleitem_by_name(attr)
+            name = titleitem.name
+            is_countcell = titleitem.get_countcell()
             if titleitem is None:
               print(f'[error]这里出现意外的空标题，请检查列标题名{attr}')
               break
             if isinstance(attr_value, dict):
               # 合计值
-              countcell_num = SaveDataItem.get_countcell_num(attr_value)
+              countcell_num = DataItem.get_countcell_num(attr_value)
               # 有二级列表&有合计列 如：餐饮
               bhave_sec = titleitem.get_is_seclist()
               if bhave_sec:
@@ -256,26 +282,34 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
                     if tmpcol in column_title_dic and column_title_dic[
                         tmpcol] == v_key:
                       worksheet.write(lineindex, tmpcol, v_value)
+                      dataItem.set_data_property(name, v_key, v_value)
                       break
                 if countcell_num is not None:
                   coutcell_colindex = titleitem.get_countcell_col_index()
                   worksheet.write_number(lineindex, coutcell_colindex,
                                          countcell_num, count_numcell_format)
+                  dataItem.set_data_property_countcell(name, countcell_num)
               else:
                 # 一级列表
-                des = SaveDataItem.get_des_contain_countcell(attr_value)
+                des = DataItem.get_des_contain_countcell(attr_value)
                 for tmpcol in range(maxlist_index):
                   if tmpcol in column_title_dic and column_title_dic[
                       tmpcol] == attr:
-                    # 一级列表&有合计列 如：生活用品、交通等
                     if des is not None:
                       worksheet.write(lineindex, tmpcol, des)
-                    # 一级列表，内容直接就是合计 如：日必须，日合计
+                    # 一级列表&有合计列 如：生活用品、交通等
                     if countcell_num is not None:
                       coutcell_colindex = titleitem.get_countcell_col_index()
                       worksheet.write_number(lineindex, coutcell_colindex,
                                              countcell_num,
                                              count_numcell_format)
+                      if not is_countcell:
+                        dataItem.set_des(name, des)
+                      dataItem.set_data_property_countcell(name, countcell_num)
+                    # 一级列表，内容直接就是合计 如：日必须，日合计
+                    else:
+                      dataItem.set_data_property_countcell(name, countcell_num)
+
                     break
             else:
               # 无额外列，净内容 如：todo,havedone
@@ -283,8 +317,9 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
                 if tmpcol in column_title_dic and column_title_dic[
                     tmpcol] == attr:
                   worksheet.write(lineindex, tmpcol, attr_value)
+                  dataItem.set_data(name, attr_value)
                   break
-
+      # print(dataItem)
       # 行求和
       for key, value_sditem in rowsum_dic.items():
         sum_itemlist = []
@@ -348,15 +383,10 @@ def create_empty(jsoninfo: ConfigureData, helper: XlsHelper):
 
 
 def read_savedata():
+  global savedata_dict
   with open(savedata_json_filepath, 'rb') as f:
     jsondic = json.load(f)
-    for key, value in jsondic.items():
-      if key == 'emptyTemplate':
-        empty_template = value
-      else:
-        sd_item = SaveDataItem(empty_template)
-        sd_item.set_data(value)
-        savedata_dict[key] = sd_item
+    savedata_dict = jsondic
 
 
 def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
@@ -424,13 +454,23 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
     col_index = 0
 
 
+def init_analysis(jsoninfo: ConfigureData):
+  num = jsoninfo.get_analysis_data_row_col_num()
+  for i in range(max_month):
+    analy_monthdataitem = AnalysisMonthDataItem(i, num[0], num[1])
+    analy_monthdata_list.append(analy_monthdataitem)
+  # print(analy_monthdata_list)
+
+
 if __name__ == "__main__":
   jsoninfo = get_jsondata(config_json_filepath)
   excel_savepath = jsoninfo.get_excelpath()
   helper = XlsHelper(jsoninfo, excel_savepath)
 
   read_savedata()
-  create_empty(jsoninfo, helper)
+  create_detail(jsoninfo, helper)
+
+  init_analysis(jsoninfo)
   write_analysis(jsoninfo, helper)
 
   helper.close_workbook()

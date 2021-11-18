@@ -1,43 +1,4 @@
 {
-    "emptyTemplate": {
-        "todo": "",
-        "havedone": "",
-        "diet": {
-            "breakfast": "",
-            "lunch": "",
-            "dinner": "",
-            "nightsnack": "",
-            "snacksdrinks": "",
-            "takeoutfood": "",
-            "countcell": null
-        },
-        "dailyuse": {
-            "des": "",
-            "countcell": null
-        },
-        "traffic": {
-            "des": "",
-            "countcell": null
-        },
-        "housing": {
-            "des": "",
-            "countcell": null
-        },
-        "daymustcoust": {
-            "countcell": 0
-        },
-        "entertainment": {
-            "des": "",
-            "countcell": null
-        },
-        "shopping": {
-            "des": "",
-            "countcell": null
-        },
-        "daycoust": {
-            "countcell": 0
-        }
-    },
     "2021/1/1": {
         "todo": "a",
         "havedone": "b",
