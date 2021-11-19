@@ -3,7 +3,7 @@ from datetime import datetime
 import calendar
 import json
 from configure_data import ConfigureData
-from item_analysis_month_data import AnalysisMonthDataItem
+from item_analysis_month_data import AnalysisMonthDataItem, MonthDataItem
 from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
 from item_data import DataItem
 from sum_colsum import ColSumResult
@@ -32,20 +32,40 @@ config_json_filepath = "./config.json"
 
 analy_monthdata_list = []
 
+row_daydataItem_dic = {}
+'''行下标-每天数据-字典；
+key：行下标
+value：DataItem'''
 
-def rowsum_set_resultindex(key, content):
+month_lis_tuple_daydataItem_dic = {}
+'''月份数-每天数据列表-字典；
+key：月份数；
+value：MonthDataItem
+'''
+
+
+def get_day_by_row(row):
+  '''通过行号获取日期day'''
+  global row_daydataItem_dic
+  if row in row_daydataItem_dic:
+    item = row_daydataItem_dic[row]
+    if isinstance(item, DataItem):
+      return item.day
+  return None
+
+
+def rowsum_set_result(name, index):
+  '''行求和结果，列下标设置'''
   global rowsum_dic
-  """
-    行求和结果，列下标设置
-    """
-  if key not in rowsum_dic:
-    rowsum_dic[key] = RowSumResult()
-  tmp = rowsum_dic[key]
+  if name not in rowsum_dic:
+    rowsum_dic[name] = RowSumResult()
+  tmp = rowsum_dic[name]
   if isinstance(tmp, RowSumResult):
-    tmp.set_index(content)
+    tmp.set_index(index)
+    tmp.set_name(name)
 
 
-def rowsum_add_itemindex(key, value):
+def rowsum_add_item(key, index, name):
   global rowsum_dic
   """
     行求和元素，列下标设置
@@ -54,14 +74,13 @@ def rowsum_add_itemindex(key, value):
     rowsum_dic[key] = RowSumResult()
   tmp = rowsum_dic[key]
   if isinstance(tmp, RowSumResult):
-    tmp.add_list_item(value)
+    tmp.add_list_item(index)
+    tmp.add_list_item_name(name)
 
 
 def colsumdic_callfunc(key, funname, content):
+  '''列求和字典,列下标设置'''
   global colsum_dic
-  """
-    列求和字典,列下标设置
-    """
   if key not in colsum_dic:
     colsum_dic[key] = ColSumResult()
   mc = operator.methodcaller(funname, content)
@@ -182,12 +201,12 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       for key in rowsum_dickey:
         is_rowsum = titleitem.get_is_keytrue_in_titleitem(key)
         if is_rowsum:
-          rowsum_add_itemindex(key, listindex)
+          rowsum_add_item(key, listindex, titleitem.name)
 
       rowsumdic_value = titleitem.get_rowsum_dicvalue()
       is_rowsum_result_here = rowsumdic_value is not None
       if is_rowsum_result_here:
-        rowsum_set_resultindex(rowsumdic_value, listindex)
+        rowsum_set_result(rowsumdic_value, listindex)
 
       # 列求和
       for key in colsum_dickey:
@@ -228,6 +247,10 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
     month_totoal_daynum = calendar.monthrange(c_year, c_month)[1]
     week_start_lineindex = week_end_lineindex = 0
     month_start_lineindex = month_end_lineindex = 0
+
+    month_dataitem = MonthDataItem(c_month)
+    month_lis_tuple_daydataItem_dic[c_month] = month_dataitem
+
     # 按月冻结行
     if (breeze_listindex != -1 and int(freeze_detail) == c_month
         and jsoninfo.get_isfreezemonth()):
@@ -253,7 +276,8 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       worksheet.write_datetime(lineindex, 0, date, date_format)
 
       # 周数
-      cn_weeknum_str = XlsHelper.get_weekday_cn_name_by_index(day_item[3])
+      weekday_index = day_item[3]
+      cn_weeknum_str = XlsHelper.get_weekday_cn_name_by_index(weekday_index)
       weekday_format = helper.get_weekformat()
       worksheet.write(lineindex, 1, cn_weeknum_str, weekday_format)
       curday_index = curday_index + 1
@@ -261,7 +285,11 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       #写入数据
       key_ymd = year_month_day.replace('-', '/')
       dataItem = copy.deepcopy(empty_dataItem)
+      dataItem.row = lineindex
       dataItem.date = key_ymd
+      dataItem.set_weekday_index(weekday_index)
+      row_daydataItem_dic[lineindex] = dataItem
+
       for key, value_sditem in savedata_dict.items():
         if key_ymd == key and isinstance(value_sditem, dict):
           for attr, attr_value in value_sditem.items():
@@ -329,7 +357,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
           #     # 合计列内容,空表格的时候写入格式用的
           #     worksheet.write(lineindex, tmplie, "", count_numcell_format)
           if isinstance(value_sditem, RowSumResult):
-            for needcount_lie in value_sditem.item_list:
+            for needcount_lie in value_sditem.item_index_list:
               if tmplie == needcount_lie:
                 sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
                 sum_itemlist.append(sumstr)
@@ -338,6 +366,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
         sumstr = f"=SUM({sumstr})"
         if isinstance(value_sditem, RowSumResult):
           worksheet.write(lineindex, value_sditem.index, sumstr, sum_format)
+          dataItem.cal_countcell(key, value_sditem.item_name_list)
 
       # 周求和
       weekcount_key = jsoninfo.get_weekcount_key()
@@ -345,6 +374,11 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
         week_end_lineindex = lineindex
         sumstr = get_sumstr(weekcount_key, week_start_lineindex,
                             week_end_lineindex)
+        week_start_day = get_day_by_row(week_start_lineindex)
+        week_end_day = get_day_by_row(week_end_lineindex)
+        month_dataitem.add_weekitem_day(week_start_day, week_end_day)
+        month_dataitem.add_weekitem_row(week_start_lineindex,
+                                        week_end_lineindex)
         lineindex = lineindex + 1
         result = colsum_dic[weekcount_key]
         if isinstance(result, ColSumResult):
@@ -358,6 +392,11 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
         if cn_weeknum_str != "周日":
           sumstr = get_sumstr(weekcount_key, week_start_lineindex,
                               week_end_lineindex)
+          week_start_day = get_day_by_row(week_start_lineindex)
+          week_end_day = get_day_by_row(week_end_lineindex)
+          month_dataitem.add_weekitem_day(week_start_day, week_end_day)
+          month_dataitem.add_weekitem_row(week_start_lineindex,
+                                          week_end_lineindex)
           result = colsum_dic[weekcount_key]
           if isinstance(result, ColSumResult):
             lineindex = lineindex + 1
@@ -376,6 +415,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
                           month_end_format)
         new_week = True
 
+      # print(row_daydataItem_dic)
       # 行高
       defaulttitle_height = jsoninfo.get_title_height()
       worksheet.set_row(lineindex, defaulttitle_height)
@@ -454,10 +494,32 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
     col_index = 0
 
 
-def init_analysis(jsoninfo: ConfigureData):
+def init_analysis(jsoninfo: ConfigureData, month_sort_dic, dataItem_dic):
   num = jsoninfo.get_analysis_data_row_col_num()
-  for i in range(max_month):
-    analy_monthdataitem = AnalysisMonthDataItem(i, num[0], num[1])
+  row, col = num[0], num[1]
+  for month_index in range(max_month):
+    analy_monthdataitem = AnalysisMonthDataItem(month_index, row, col)
+    month = analy_monthdataitem.month
+    if month in month_sort_dic:
+      monthdata_item = month_sort_dic[month]
+      if isinstance(monthdata_item, MonthDataItem):
+        analy_monthdataitem.set_monthdata(monthdata_item)
+        rowtuple_list = monthdata_item.rowtuple_list
+        for weekindex, rowtuple in enumerate(rowtuple_list):
+          week_start_row = rowtuple[0]
+          week_end_row = rowtuple[1]
+          row_list = list(range(week_start_row, week_end_row + 1))
+          weektotalcount = 0
+          for dayrow in row_list:
+            if dayrow in dataItem_dic:
+              dataitem = dataItem_dic[dayrow]
+              if isinstance(dataitem, DataItem):
+                daycoust = dataitem.get_daycoust_countcell()
+                weekdayindex = dataitem.get_weekday_index()
+                analy_monthdataitem.set_data(weekindex, weekdayindex, daycoust)
+                weektotalcount = weektotalcount + daycoust
+          analy_monthdataitem.add_weekcoust_list(weektotalcount)
+
     analy_monthdata_list.append(analy_monthdataitem)
   # print(analy_monthdata_list)
 
@@ -470,7 +532,7 @@ if __name__ == "__main__":
   read_savedata()
   create_detail(jsoninfo, helper)
 
-  init_analysis(jsoninfo)
+  init_analysis(jsoninfo, month_lis_tuple_daydataItem_dic, row_daydataItem_dic)
   write_analysis(jsoninfo, helper)
 
   helper.close_workbook()

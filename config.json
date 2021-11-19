@@ -90,7 +90,7 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fe4365",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "dailyuse",
@@ -98,7 +98,7 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#fc9d9a",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "traffic",
@@ -106,7 +106,7 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f9cdad",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "housing",
@@ -114,15 +114,15 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#c8c8a9",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "daymustcoust",
 			"showname": "日必须",
-			"rowSumDic": "dayMustCoust",
+			"rowSumDic": "daymustcoust",
 			"fontcolor": "white",
 			"bgcolor": "#83af9b",
-			"dayCoust": true,
+			"daycoust": true,
 			"countcell": true
 		},
 		{
@@ -131,7 +131,7 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#8a977b",
-			"dayCoust": true
+			"daycoust": true
 		},
 		{
 			"name": "shopping",
@@ -139,12 +139,12 @@
 			"addCountCell": "合计",
 			"fontcolor": "white",
 			"bgcolor": "#f4cf00",
-			"dayCoust": true
+			"daycoust": true
 		},
 		{
 			"name": "daycoust",
 			"showname": "日合计",
-			"rowSumDic": "dayCoust",
+			"rowSumDic": "daycoust",
 			"fontcolor": "white",
 			"bgcolor": "#dc5712",
 			"weekCoust": true,
@@ -169,8 +169,8 @@
 		}
 	],
 	"rowSumDicKey": [
-		"dayMustCoust",
-		"dayCoust"
+		"daymustcoust",
+		"daycoust"
 	],
 	"colSumDicKey": [
 		"weekCoust",

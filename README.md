@@ -548,30 +548,30 @@ pip install xlsxwriter
 		{
 			"name": "餐饮",
             "addCountCell": "合计",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "生活用品",
             "addCountCell": "合计",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "交通",
             "addCountCell": "合计",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "住房",
             "addCountCell": "合计",
-			"dayMustCoust": true
+			"daymustcoust": true
 		},
 		{
 			"name": "日必须",
-			"rowSumDic": "dayMustCoust",
+			"rowSumDic": "daymustcoust",
 		},
 	],
 	"rowSumDicKey": [
-		"dayMustCoust"
+		"daymustcoust"
 	],
 }
 ```
@@ -585,25 +585,25 @@ pip install xlsxwriter
 	"title": [
 		{
 			"name": "日必须",
-			"dayCoust": true
+			"daycoust": true
 		},
 		{
 			"name": "娱乐",
             "addCountCell": "合计",
-			"dayCoust": true
+			"daycoust": true
 		},
 		{
 			"name": "购物",
             "addCountCell": "合计",
-			"dayCoust": true
+			"daycoust": true
 		},
 		{
 			"name": "日合计",
-			"rowSumDic": "dayCoust",
+			"rowSumDic": "daycoust",
 		},
 	],
 	"rowSumDicKey": [
-		"dayCoust"
+		"daycoust"
 	],
 }
 ```
