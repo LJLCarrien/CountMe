@@ -22,6 +22,7 @@ class TitleItem():
     # 标题默认格式
     self.formatitem: FormatItem = None
     # 标题定制格式
+    self.bold = None
     self.fontsize = None
     self.fontname = None
     self.fontcolor = None
@@ -88,6 +89,8 @@ class TitleItem():
     f_item = self.get_title_defaultformat_by_type(confdic, type)
     self.formatitem = f_item
     format = self.formatitem.get_format(workbook)
+    if self.bold is not None:
+      format.set_bold(self.bold)
     if self.fontsize is not None:
       format.set_font_size(self.fontsize)
     if self.fontname is not None:

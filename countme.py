@@ -4,7 +4,7 @@ import calendar
 import json
 from configure_data import ConfigureData
 from item_analysis_month_data import AnalysisMonthDataItem, MonthDataItem
-from item_analysis_title import ColAnalysisTitleItem, RowAnalysisTitleItem
+from item_analysis_title import AnalysisTitleType, ColAnalysisTitleItem, RowAnalysisTitleItem
 from item_data import DataItem
 from sum_colsum import ColSumResult
 from sum_rowsum import RowSumResult
@@ -438,6 +438,7 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
   collist = jsoninfo.get_analysis_coltitle_list()
   col_len = len(collist)
   row_cur = col_cur = 0
+  row_data_num, col_data_num = jsoninfo.get_analysis_data_row_col_num()
   # 每个月内容行数
   row_content = 0
   col_content = 0
@@ -455,14 +456,21 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
         worksheet.write(row_cur, col_need, item.showname, titleformat)
         # 列标题对应内容
         is_handle_itemcell = item.get_isneed_handle_itemcell()
-        if is_handle_itemcell:
-          itemcellformat = helper.get_analysis_itemcell_format(item)
-          for r in range(row_len):
-            if r == row_len - 1:
-              worksheet.write_number(row_cur + r + 1, col_need, 0,
-                                     itemcellformat)
-            else:
-              worksheet.write(row_cur + r + 1, col_need, None, itemcellformat)
+        itemcellformat = helper.get_analysis_itemcell_format(
+            item) if is_handle_itemcell else None
+        for row_index in range(row_len):
+          monthdata = analy_monthdata_list[m]
+          if isinstance(monthdata, AnalysisMonthDataItem):
+            if col_index < col_data_num and row_index < row_data_num:
+              value = monthdata.get_data(col_index, row_index)
+              worksheet.write(row_cur + row_index + 1, col_need, value,
+                              itemcellformat)
+          if row_index == row_len - 1:
+            worksheet.write_number(row_cur + row_index + 1, col_need, 0,
+                                   itemcellformat)
+            # else:
+            #   worksheet.write(row_cur + r + 1, col_need, None, itemcellformat)
+
     if row_cur == 0:
       # 每月列数=列标题数+行标题占的1列
       col_content = col_need + 1
@@ -518,7 +526,7 @@ def init_analysis(jsoninfo: ConfigureData, month_sort_dic, dataItem_dic):
                 weekdayindex = dataitem.get_weekday_index()
                 analy_monthdataitem.set_data(weekindex, weekdayindex, daycoust)
                 weektotalcount = weektotalcount + daycoust
-          analy_monthdataitem.add_weekcoust_list(weektotalcount)
+          analy_monthdataitem.set_weekcoust_item(weekindex, weektotalcount)
 
     analy_monthdata_list.append(analy_monthdataitem)
   # print(analy_monthdata_list)

@@ -39,8 +39,8 @@ class FormatItem():
     result_format = workbook.add_format()
     if self.numformat is not None:
       result_format.set_num_format(self.numformat)
-    if self.bold:
-      result_format.set_bold()
+    if self.bold is not None:
+      result_format.set_bold(self.bold)
     result_format.set_align(self.horalignment)
     result_format.set_align(self.veralignment)
     result_format.set_font_size(self.fontsize)

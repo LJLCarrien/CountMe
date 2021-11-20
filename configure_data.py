@@ -136,8 +136,9 @@ class ConfigureData():
     return self.analysis_coltitle
 
   def get_analysis_title_data_num(self, type: AnalysisTitleType) -> int:
-    '''分析表格-输入数据的行数 如：周一、周二...周日'''
-    '''分析表格-输入数据的列数 如：第一周、第二周...第六周'''
+    '''分析表格
+      ROW:输入数据的行数 如：周一、周二...周日
+      COL:输入数据的列数 如：第一周、第二周...第六周'''
     result = 0
     tmplist = []
     if type == AnalysisTitleType.COL:

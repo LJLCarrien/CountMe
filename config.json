@@ -52,6 +52,7 @@
 			"item_bgcolor": null
 		},
 		"analysis_row_title": {
+			"horalignment": "left",
 			"bold": false,
 			"item_fontcolor": null,
 			"item_bgcolor": null
@@ -249,6 +250,7 @@
 		},
 		{
 			"name": "week_sparkline",
+			"bold": false,
 			"showname": "周图示"
 		},
 		{

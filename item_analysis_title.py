@@ -20,7 +20,7 @@ class AnalysisTitleItem():
   def __init__(self) -> None:
     self.name = ""
     self.showname = ""
-    self.bold = False
+    self.bold = None
     self.fontsize = None
     self.fontname = None
     self.fontcolor = None
@@ -59,8 +59,8 @@ class AnalysisTitleItem():
     self.formatitem.item_fontcolor = self.item_fontcolor
     self.formatitem.item_bgcolor = self.item_bgcolor
     format = self.formatitem.get_format(workbook)
-    if self.bold:
-      format.set_bold()
+    if self.bold is not None:
+      format.set_bold(self.bold)
     if self.fontsize is not None:
       format.set_font_size(self.fontsize)
     if self.fontname is not None:

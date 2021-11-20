@@ -51,6 +51,7 @@ class AnalysisMonthDataItem():
       for j in range(self.showtable_weekdaynum):
         weeklist.append(None)
       self.data[i] = weeklist
+      self.weekcoust_list.append(0)
 
   def set_monthdata(self, data: MonthDataItem):
     self.monthdata = data
@@ -58,8 +59,11 @@ class AnalysisMonthDataItem():
   def set_data(self, weeknum, weekdaynum, value):
     self.data[weeknum][weekdaynum] = value
 
-  def add_weekcoust_list(self, value):
-    self.weekcoust_list.append(value)
+  def get_data(self, weeknum, weekdaynum):
+    return self.data[weeknum][weekdaynum]
+
+  def set_weekcoust_item(self, index, value):
+    self.weekcoust_list[index] = value
     self.monthcoust = self.monthcoust + value
 
   # def set_data(self, data:MonthDataItem):
