@@ -502,6 +502,65 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
     col_index = 0
 
 
+def write_chart_item(helper: XlsHelper, month):
+  sheetname = f"{str(c_year)}图表"
+  worksheet = helper.get_worksheet(sheetname)
+  chart = helper.get_chart('column')
+  chart_rowtitle = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+  chart_coltitle = ['第一周', '第二周', '第三周', '第四周', '第五周', '第六周']
+
+  data = [
+      [1, 2, 3, 4, 5, 6, 7],
+      [2, 4, 6, 8, 10, 12, 14],
+      [3, 6, 9, 12, 15, 18, 21],
+      [4, 8, 12, 16, 20, 24, 28],
+      [5, 10, 15, 20, 25, 30, 35],
+      [6, 12, 18, 24, 30, 36, 42],
+  ]
+
+  worksheet.write_row('B1', chart_coltitle)
+  worksheet.write_column('A2', chart_rowtitle)
+
+  worksheet.write_column('B2', data[0])
+  worksheet.write_column('C2', data[1])
+  worksheet.write_column('D2', data[2])
+  worksheet.write_column('E2', data[3])
+  worksheet.write_column('F2', data[4])
+  worksheet.write_column('G2', data[5])
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!B1',
+      'values': f'={sheetname}!$B$2:$B$8'
+  })
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!C1',
+      'values': f'={sheetname}!$C$2:$C$8'
+  })
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!D1',
+      'values': f'={sheetname}!$D$2:$D$8'
+  })
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!E1',
+      'values': f'={sheetname}!$E$2:$E$8'
+  })
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!F1',
+      'values': f'={sheetname}!$F$2:$F$8'
+  })
+  chart.add_series({
+      'categories': f'={sheetname}!$A$2:$A$8',
+      'name': f'={sheetname}!G1',
+      'values': f'={sheetname}!$G$2:$G$8'
+  })
+  chart.set_title({'name': f'{month}月'})
+  worksheet.insert_chart('A9', chart)
+
+
 def init_analysis(jsoninfo: ConfigureData, month_sort_dic, dataItem_dic):
   num = jsoninfo.get_analysis_data_row_col_num()
   row, col = num[0], num[1]
@@ -543,4 +602,6 @@ if __name__ == "__main__":
   init_analysis(jsoninfo, month_lis_tuple_daydataItem_dic, row_daydataItem_dic)
   write_analysis(jsoninfo, helper)
 
+  # 测试代码
+  write_chart_item(helper, 1)
   helper.close_workbook()

@@ -1,3 +1,5 @@
+from xlsxwriter import worksheet
+from xlsxwriter.chart import Chart
 from configure_data import ConfigureData
 from item_analysis_title import AnalysisTitleItem
 from item_format import FormatItem
@@ -51,6 +53,9 @@ class XlsHelper():
     else:
       self.worksheet = self.workbook.get_worksheet_by_name(sheetname)
     return self.worksheet
+
+  def get_chart(self, typename: str) -> Chart:
+    return self.workbook.add_chart({'type': typename})
 
   def get_titleformat(self,
                       iteminfo: TitleItem,
