@@ -431,7 +431,8 @@ def read_savedata():
 
 def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
   '''分析结果'''
-  worksheet = helper.get_worksheet(f"{str(c_year)}汇总")
+  sheetname = f"{str(c_year)}汇总"
+  worksheet = helper.get_worksheet(sheetname)
 
   rowlist = jsoninfo.get_analysis_rowtitle_list()
   row_len = len(rowlist)
@@ -439,16 +440,45 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
   col_len = len(collist)
   row_cur = col_cur = 0
   row_data_num, col_data_num = jsoninfo.get_analysis_data_row_col_num()
+
   # 每个月内容行数
   row_content = 0
   col_content = 0
   # 每个月之间的间距
   row_interval = 1
   for m in range(max_month):
-    worksheet.write(row_cur, col_cur, f"{m+1}月")
-    # 列标题
+    # 表格标题数据
+    charttitle_row_start_index = row_cur + 1
+    charttitle_row_end_index = row_cur + row_data_num
+
+    charttitle_row_start_cell_abs = helper.get_rowcol_abs(
+        charttitle_row_start_index, col_cur)
+    charttitle_row_end_cell_abs = helper.get_rowcol_abs(
+        charttitle_row_end_index, col_cur)
+
+    chart_pos_cellstr = helper.get_rowcol_2_str(row_cur, col_cur + col_len + 1)
+
+    chartname = f"{m+1}月"
+    worksheet.write(row_cur, col_cur, chartname)
+    chart = helper.get_chart('column')
+    chart.set_title({'name': chartname})
+    chart.set_size({'height': 200, 'width': 384})
+
+    fontformat = {'color': '#ababb9', 'name': '微软雅黑', 'size': 9}
+    lineformat = {'none': True}
+    major_gridlines_format = {'visible': True, 'line': {'color': '#d9d9d9'}}
+    chart.set_legend({'position': 'bottom', 'font': fontformat})
+    chart.set_x_axis({'num_font': fontformat, 'line': lineformat})
+    chart.set_y_axis({
+        'num_font': fontformat,
+        'major_gridlines': major_gridlines_format,
+        'line': lineformat
+    })
+    #region 列标题
     for col_index in range(col_len):
       item = collist[col_index]
+      charttitle_col_start_cellstr = helper.get_rowcol_2_str(
+          charttitle_row_start_index - 1, col_cur + 1 + col_index)
       if isinstance(item, ColAnalysisTitleItem):
         titleformat = helper.get_analysis_titleitem_format(item)
         # 避开第0列
@@ -465,17 +495,32 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
               value = monthdata.get_data(col_index, row_index)
               worksheet.write(row_cur + row_index + 1, col_need, value,
                               itemcellformat)
+              if row_index == 0:
+                chartdata_col_start_cell_abs = helper.get_rowcol_abs(
+                    row_cur + row_index + 1, col_need)
+                chartdata_col_end_cell_abs = helper.get_rowcol_abs(
+                    row_cur + row_index + 1 + col_data_num, col_need)
+                chart_categories = f'={sheetname}!{charttitle_row_start_cell_abs}:{charttitle_row_end_cell_abs}'
+                chart_name = f'={sheetname}!{charttitle_col_start_cellstr}'
+                chart_value = f'={sheetname}!{chartdata_col_start_cell_abs}:{chartdata_col_end_cell_abs}'
+                chart.add_series({
+                    'categories': chart_categories,
+                    'name': chart_name,
+                    'values': chart_value,
+                    'fill': {
+                        'color': item.bgcolor
+                    }
+                })
           if row_index == row_len - 1:
             worksheet.write_number(row_cur + row_index + 1, col_need, 0,
                                    itemcellformat)
-            # else:
-            #   worksheet.write(row_cur + r + 1, col_need, None, itemcellformat)
-
+      #endregion
+    worksheet.insert_chart(chart_pos_cellstr, chart)
     if row_cur == 0:
       # 每月列数=列标题数+行标题占的1列
       col_content = col_need + 1
 
-    # 行标题
+    #region 行标题
     for row_index in range(row_len):
       item = rowlist[row_index]
       if isinstance(item, RowAnalysisTitleItem):
@@ -493,12 +538,14 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
                 worksheet.write(row_need, c + 1, None, itemcellformat)
               else:
                 worksheet.write_number(row_need, c + 1, 0, itemcellformat)
+    #endregion
 
     if row_cur == 0:
       # 每月行数=行标题数+列标题占的1行
       row_content = row_need + 1
 
     row_cur = row_cur + row_content + row_interval
+
     col_index = 0
 
 
@@ -656,5 +703,5 @@ if __name__ == "__main__":
   write_analysis(jsoninfo, helper)
 
   # 测试代码
-  write_chart_item(helper, 1)
+  # write_chart_item(helper, 1)
   helper.close_workbook()

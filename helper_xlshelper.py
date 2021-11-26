@@ -6,7 +6,7 @@ from item_format import FormatItem
 from item_title import TitleItem, TitleType
 import xlsxwriter
 from xlsxwriter.format import Format
-from xlsxwriter.utility import xl_rowcol_to_cell, xl_cell_to_rowcol
+from xlsxwriter.utility import xl_rowcol_to_cell, xl_cell_to_rowcol, xl_col_to_name
 
 # 英文简称获取：calendar.day_abbr
 cn_day_abbr = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
@@ -36,6 +36,15 @@ class XlsHelper():
     '''
     # result = f"{chr(ord('A') + col)}{row + 1}"
     result = xl_rowcol_to_cell(row, col)
+    return result
+
+  @staticmethod
+  def get_rowcol_abs(row, col):
+    '''行列转绝对字符串 
+    eq: 0,0->$A$1
+    '''
+    colstr = xl_col_to_name(col, True)
+    result = f'{colstr}${row+1}'
     return result
 
   @staticmethod
