@@ -506,6 +506,7 @@ def write_chart_item(helper: XlsHelper, month):
   sheetname = f"{str(c_year)}图表"
   worksheet = helper.get_worksheet(sheetname)
   chart = helper.get_chart('column')
+  chart.set_size({'height': 200, 'width': 384})
   chart_rowtitle = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
   chart_coltitle = ['第一周', '第二周', '第三周', '第四周', '第五周', '第六周']
 
@@ -530,34 +531,86 @@ def write_chart_item(helper: XlsHelper, month):
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!B1',
-      'values': f'={sheetname}!$B$2:$B$8'
+      'values': f'={sheetname}!$B$2:$B$8',
+      'fill': {
+          'color': '#5B9BD5'
+      }
   })
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!C1',
-      'values': f'={sheetname}!$C$2:$C$8'
+      'values': f'={sheetname}!$C$2:$C$8',
+      'fill': {
+          'color': '#ED7D31'
+      }
   })
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!D1',
-      'values': f'={sheetname}!$D$2:$D$8'
+      'values': f'={sheetname}!$D$2:$D$8',
+      'fill': {
+          'color': '#A5A5A5'
+      }
   })
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!E1',
-      'values': f'={sheetname}!$E$2:$E$8'
+      'values': f'={sheetname}!$E$2:$E$8',
+      'fill': {
+          'color': '#FFC000'
+      }
   })
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!F1',
-      'values': f'={sheetname}!$F$2:$F$8'
+      'values': f'={sheetname}!$F$2:$F$8',
+      'fill': {
+          'color': '#4472C0'
+      }
   })
   chart.add_series({
       'categories': f'={sheetname}!$A$2:$A$8',
       'name': f'={sheetname}!G1',
-      'values': f'={sheetname}!$G$2:$G$8'
+      'values': f'={sheetname}!$G$2:$G$8',
+      'fill': {
+          'color': '#70AD47'
+      }
+  })
+  chart.set_x_axis({
+      'num_font': {
+          'color': '#ababb9',
+          'name': '微软雅黑',
+          'size': 9
+      },
+      'line': {
+          'none': True
+      }
+  })
+  chart.set_y_axis({
+      'num_font': {
+          'color': '#ababb9',
+          'name': '微软雅黑',
+          'size': 9
+      },
+      'major_gridlines': {
+          'visible': True,
+          'line': {
+              'color': '#d9d9d9'
+          }
+      },
+      'line': {
+          'none': True
+      }
   })
   chart.set_title({'name': f'{month}月'})
+  chart.set_legend({
+      'position': 'bottom',
+      'font': {
+          'color': '#ababb9',
+          'name': '微软雅黑',
+          'size': 9
+      }
+  })
   worksheet.insert_chart('A9', chart)
 
 
