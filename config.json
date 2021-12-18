@@ -49,13 +49,15 @@
 		"analysis_col_title": {
 			"bold": true,
 			"item_fontcolor": null,
-			"item_bgcolor": null
+			"item_bgcolor": null,
+			"item_bold": false
 		},
 		"analysis_row_title": {
-			"horalignment": "left",
+			"horalignment": "center",
 			"bold": false,
 			"item_fontcolor": null,
-			"item_bgcolor": null
+			"item_bgcolor": null,
+			"item_bold": false
 		}
 	},
 	"title": [

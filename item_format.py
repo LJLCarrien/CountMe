@@ -21,6 +21,7 @@ class FormatItem():
     self.numformat = None
     self.item_fontcolor = None
     self.item_bgcolor = None
+    self.item_bold = None
     if info is not None:
       self.set_data(info)
 
@@ -54,10 +55,14 @@ class FormatItem():
   def get_itemcell_format(self, workbook: Workbook) -> Format:
     '''获取行/列标题的列格子内容格式'''
     format = self.get_format(workbook)
+    format.set_align(self.horalignment)
+    format.set_align(self.veralignment)
     if format is not None:
       if self.item_fontcolor is not None:
         format.set_font_color(self.item_fontcolor)
       if self.item_bgcolor is not None:
         format.set_bg_color(self.item_bgcolor)
+      if self.item_bold is not None:
+        format.set_bold(self.item_bold)
       self.itemformat = format
     return format

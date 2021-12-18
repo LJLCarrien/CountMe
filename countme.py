@@ -94,7 +94,7 @@ def get_sumstr(dic, key, startindex, endindex):
     dic[key] = ColSumResult()
   tmp = dic[key]
   if isinstance(tmp, ColSumResult):
-    return tmp.get_sumstr(XlsHelper, startindex, endindex)
+    return tmp.get_sumstr_by_index(XlsHelper, startindex, endindex)
   return None
 
 
@@ -352,21 +352,22 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       # print(dataItem)
       # 行求和
       for key, value_sditem in rowsum_dic.items():
-        sum_itemlist = []
-        for tmplie in range(maxlist_index):
-          # for lie in countcell_list:
-          #   if tmplie == lie:
-          #     # 合计列内容,空表格的时候写入格式用的
-          #     worksheet.write(lineindex, tmplie, "", count_numcell_format)
-          if isinstance(value_sditem, RowSumResult):
-            for needcount_lie in value_sditem.item_index_list:
-              if tmplie == needcount_lie:
-                sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
-                sum_itemlist.append(sumstr)
-        # 行求和内容
-        sumstr = ",".join(sum_itemlist)
-        sumstr = f"=SUM({sumstr})"
+        # sum_itemlist = []
+        # for tmplie in range(maxlist_index):
+        #   # for lie in countcell_list:
+        #   #   if tmplie == lie:
+        #   #     # 合计列内容,空表格的时候写入格式用的
+        #   #     worksheet.write(lineindex, tmplie, "", count_numcell_format)
+        #   if isinstance(value_sditem, RowSumResult):
+        #     for needcount_lie in value_sditem.item_index_list:
+        #       if tmplie == needcount_lie:
+        #         sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
+        #         sum_itemlist.append(sumstr)
+        # # 行求和内容
+        # sumstr = ",".join(sum_itemlist)
+        # sumstr = f"=SUM({sumstr})"
         if isinstance(value_sditem, RowSumResult):
+          sumstr = value_sditem.get_sumstr(XlsHelper, lineindex)
           worksheet.write(lineindex, value_sditem.index, sumstr, sum_format)
           dataItem.cal_countcell(key, value_sditem.item_name_list)
 
@@ -513,9 +514,16 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
                         'color': item.bgcolor
                     }
                 })
+          # 月求和
           if row_index == row_len - 1:
-            worksheet.write_number(row_cur + row_index + 1, col_need, 0,
-                                   itemcellformat)
+            rs = RowSumResult()
+            for i in range(col_need - 1):
+              if i == 0:
+                continue
+              rs.add_list_item(i)
+            sumstr = rs.get_sumstr(XlsHelper, row_cur + row_index + 1)
+            worksheet.write(row_cur + row_index + 1, col_need, sumstr,
+                            itemcellformat)
       #endregion
     worksheet.insert_chart(chart_pos_cellstr, chart)
     if row_cur == 0:
@@ -529,17 +537,23 @@ def write_analysis(jsoninfo: ConfigureData, helper: XlsHelper):
         titleformat = helper.get_analysis_titleitem_format(item)
         # 避开第0行
         row_need = row_cur + row_index + 1
-        worksheet.write(row_need, col_cur, item.showname, titleformat)
         # 行标题对应内容
-        is_handle_itemcell = item.get_isneed_handle_itemcell()
-        if is_handle_itemcell:
-          itemcellformat = helper.get_analysis_itemcell_format(item)
-          for c in range(col_len):
-            if c < col_content - 2:
-              if c == col_content - 3:
-                worksheet.write(row_need, c + 1, None, itemcellformat)
-              else:
-                worksheet.write_number(row_need, c + 1, 0, itemcellformat)
+        worksheet.write(row_need, col_cur, item.showname, titleformat)
+        # 周求和
+        isrow_weekcount = item.get_is_weekcount()
+        if isrow_weekcount:
+          is_handle_itemcell = item.get_isneed_handle_itemcell()
+          if is_handle_itemcell:
+            itemcellformat = helper.get_analysis_itemcell_format(item)
+            for c in range(col_len):
+              if c < col_content - 2:
+                if c == col_content - 3:
+                  worksheet.write(row_need, c + 1, None, itemcellformat)
+                else:
+                  cs = ColSumResult()
+                  cs.set_index(row_need - 1 - 7, row_need - 2, c + 1, c + 1)
+                  sumstr = cs.get_sumstr(XlsHelper)
+                  worksheet.write(row_need, c + 1, sumstr, itemcellformat)
     #endregion
 
     if row_cur == 0:

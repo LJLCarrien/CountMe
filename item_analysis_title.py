@@ -28,6 +28,7 @@ class AnalysisTitleItem():
     '''item:行标题，对应该行的其他格子;列标题，对应该列的其他格子'''
     self.item_fontcolor = None
     self.item_bgcolor = None
+    self.item_bold = None
     self.type = None
     self.formatitem: FormatItem = None
     self.format: Format = None
@@ -54,10 +55,17 @@ class AnalysisTitleItem():
   def get_format(self, workbook: Workbook, confdic: dict) -> Format:
     if self.format is not None:
       return self.format
+    # 通用行列标题格式
     f_item = self.get_defaultformat_by_type(confdic)
     self.formatitem = f_item
-    self.formatitem.item_fontcolor = self.item_fontcolor
-    self.formatitem.item_bgcolor = self.item_bgcolor
+    if self.item_fontcolor is not None:
+      self.formatitem.item_fontcolor = self.item_fontcolor
+    if self.item_bgcolor is not None:
+      self.formatitem.item_bgcolor = self.item_bgcolor
+      self.item_bgcolor = self.item_bgcolor
+    if self.item_bold is not None:
+      self.formatitem.item_bold = self.item_bold
+    # 全局通用默认
     format = self.formatitem.get_format(workbook)
     if self.bold is not None:
       format.set_bold(self.bold)
@@ -81,11 +89,15 @@ class AnalysisTitleItem():
     return format
 
   def get_isneed_handle_itemcell(self):
-    return self.item_bgcolor is not None or self.item_fontcolor is not None
+    return self.formatitem.item_bgcolor is not None or self.formatitem.item_fontcolor is not None or self.formatitem.item_bold is not None
 
   def get_is_data(self):
     '''分析表格的输入数据'''
     return self.contenttype == "data"
+
+  def get_is_weekcount(self):
+    '''是否周求和'''
+    return self.name == "weekcount"
 
 
 class ColAnalysisTitleItem(AnalysisTitleItem):

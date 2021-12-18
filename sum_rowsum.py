@@ -11,6 +11,9 @@ class RowSumResult(object):
     self.item_name_list = []
     '''用于求和-列名称'''
 
+    self.operator_row_index = -1
+    '''用于求和-行下标'''
+
   def set_index(self, i):
     """求和结果-列下标"""
     self.index = i
@@ -33,3 +36,13 @@ class RowSumResult(object):
     if self.item_name_list is None:
       self.item_name_list = []
     self.item_name_list.append(item)
+
+  def get_sumstr(self, helper, row):
+    self.operator_row_index = row
+    sum_itemlist = []
+    for col in self.item_index_list:
+      sumstr = helper.get_rowcol_2_str(self.operator_row_index, col)
+      sum_itemlist.append(sumstr)
+    sumstr = ",".join(sum_itemlist)
+    sumstr = f"=SUM({sumstr})"
+    return sumstr

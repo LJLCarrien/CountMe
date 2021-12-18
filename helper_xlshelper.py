@@ -35,6 +35,8 @@ class XlsHelper():
     eq: 0,0->A1 ; 1,0->A2 ; 0，1->B1 ;
     '''
     # result = f"{chr(ord('A') + col)}{row + 1}"
+    if row < 0 or col < 0:
+      print('hi')
     result = xl_rowcol_to_cell(row, col)
     return result
 
