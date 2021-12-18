@@ -352,20 +352,6 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       # print(dataItem)
       # 行求和
       for key, value_sditem in rowsum_dic.items():
-        # sum_itemlist = []
-        # for tmplie in range(maxlist_index):
-        #   # for lie in countcell_list:
-        #   #   if tmplie == lie:
-        #   #     # 合计列内容,空表格的时候写入格式用的
-        #   #     worksheet.write(lineindex, tmplie, "", count_numcell_format)
-        #   if isinstance(value_sditem, RowSumResult):
-        #     for needcount_lie in value_sditem.item_index_list:
-        #       if tmplie == needcount_lie:
-        #         sumstr = XlsHelper.get_rowcol_2_str(lineindex, tmplie)
-        #         sum_itemlist.append(sumstr)
-        # # 行求和内容
-        # sumstr = ",".join(sum_itemlist)
-        # sumstr = f"=SUM({sumstr})"
         if isinstance(value_sditem, RowSumResult):
           sumstr = value_sditem.get_sumstr(XlsHelper, lineindex)
           worksheet.write(lineindex, value_sditem.index, sumstr, sum_format)

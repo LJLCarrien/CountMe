@@ -34,7 +34,7 @@ class ColSumResult(object):
   def get_sumstr_by_index(self, helper, startindex, endindex):
     self.set_rowstartindex(startindex)
     self.set_rowendindex(endindex)
-    self.get_sumstr(helper)
+    return self.get_sumstr(helper)
 
   def get_sumstr(self, helper):
     if self.operator_index != -1:
