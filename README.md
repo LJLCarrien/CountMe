@@ -825,7 +825,7 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 - [x] 数据保存（json格式)
   暂时是手动生成的
 - [x] json->dict->DataItem->excel 1->excel 2
-  读取save_data.json，写入excel创建详细的表格，统计图表
+  读取save_data.json，写入excel创建详细的表格，生成统计图表
 
 
 
@@ -834,12 +834,12 @@ weekCount和MonthCount有自身逻辑，配置只是支持求和哪一列，求�
 
 - [x] 数据表格
 
-  - [x] 天、周、月
+  - [x] 天、周（周求和）、月（月球和）
 
 - [ ] 图表生成
 
   - [x] 柱状图
-  - [ ] 折线图
+  - [ ] 折线图（周图示使用迷你图）
 
 - [ ] 优化柱状图逻辑
 
