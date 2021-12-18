@@ -19,9 +19,12 @@ c_year = datetime.now().year
 max_month = 12
 
 rowsum_dic = {}
+'''行求和字典'''
 colsum_dic = {}
-# 合计列下标数组
+'''列求和字典'''
+
 countcell_list = []
+'''合计列下标数组'''
 
 savedata_json_filepath = "./save_data_for_test.json"
 savedata_dict = {}
@@ -78,20 +81,18 @@ def rowsum_add_item(key, index, name):
     tmp.add_list_item_name(name)
 
 
-def colsumdic_callfunc(key, funname, content):
+def colsumdic_callfunc(dic, key, funname, content):
   '''列求和字典,列下标设置'''
-  global colsum_dic
-  if key not in colsum_dic:
-    colsum_dic[key] = ColSumResult()
+  if key not in dic:
+    dic[key] = ColSumResult()
   mc = operator.methodcaller(funname, content)
-  mc(colsum_dic[key])
+  mc(dic[key])
 
 
-def get_sumstr(key, startindex, endindex):
-  global colsum_dic
-  if key not in colsum_dic:
-    colsum_dic[key] = ColSumResult()
-  tmp = colsum_dic[key]
+def get_sumstr(dic, key, startindex, endindex):
+  if key not in dic:
+    dic[key] = ColSumResult()
+  tmp = dic[key]
   if isinstance(tmp, ColSumResult):
     return tmp.get_sumstr(XlsHelper, startindex, endindex)
   return None
@@ -212,12 +213,13 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       for key in colsum_dickey:
         is_colsum = titleitem.get_is_keytrue_in_titleitem(key)
         if is_colsum:
-          colsumdic_callfunc(key, "set_operatorindex", listindex)
+          colsumdic_callfunc(colsum_dic, key, "set_operatorindex", listindex)
 
       colsumdic_value = titleitem.get_colsum_dicvalue()
       is_colsum_dicresult_here = colsumdic_value is not None
       if is_colsum_dicresult_here:
-        colsumdic_callfunc(colsumdic_value, "set_resultindex", listindex)
+        colsumdic_callfunc(colsum_dic, colsumdic_value, "set_resultindex",
+                           listindex)
       listindex = listindex + 1
 
   # print(empty_dataItem)
@@ -372,7 +374,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       weekcount_key = jsoninfo.get_weekcount_key()
       if cn_weeknum_str == "周日":
         week_end_lineindex = lineindex
-        sumstr = get_sumstr(weekcount_key, week_start_lineindex,
+        sumstr = get_sumstr(colsum_dic, weekcount_key, week_start_lineindex,
                             week_end_lineindex)
         week_start_day = get_day_by_row(week_start_lineindex)
         week_end_day = get_day_by_row(week_end_lineindex)
@@ -390,7 +392,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
         month_end_lineindex = lineindex
 
         if cn_weeknum_str != "周日":
-          sumstr = get_sumstr(weekcount_key, week_start_lineindex,
+          sumstr = get_sumstr(colsum_dic, weekcount_key, week_start_lineindex,
                               week_end_lineindex)
           week_start_day = get_day_by_row(week_start_lineindex)
           week_end_day = get_day_by_row(week_end_lineindex)
@@ -403,7 +405,7 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
             worksheet.write(lineindex, result.result_index, sumstr, sum_format)
 
         monthcount_key = jsoninfo.get_monthcount_key()
-        sumstr = get_sumstr(monthcount_key, month_start_lineindex,
+        sumstr = get_sumstr(colsum_dic, monthcount_key, month_start_lineindex,
                             month_end_lineindex)
         result = colsum_dic[monthcount_key]
         if isinstance(result, ColSumResult):

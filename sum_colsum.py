@@ -5,11 +5,11 @@ class ColSumResult(object):
   def __init__(self):
     # 求和结果-列下标
     self.result_index = -1
-    # 求和对象-列下标
+    # 求和元素-列下标
     self.operator_index = -1
-    # 求和对象-行开始
+    # 求和元素-行开始
     self.rowstart_index = -1
-    # 求和对象-行结束
+    # 求和元素-行结束
     self.rowend_index = -1
 
   def set_resultindex(self, i):
