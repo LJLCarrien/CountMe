@@ -1,6 +1,7 @@
 {
 	"excelPath": "./消费.xlsx",
 	"defaultTitleWidth": 11,
+	"savedataJsonFilePath": "./save_data_for_test.json",
 	"defaultTitleHeight": 17,
 	"freezeLineMode": {
 		"type": "month",
@@ -204,6 +205,10 @@
 			{
 				"name": "takeoutfood",
 				"showname": "外卖"
+			},
+			{
+				"name": "ingredients",
+				"showname": "食材"
 			}
 		]
 	},

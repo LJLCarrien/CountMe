@@ -26,7 +26,6 @@ colsum_dic = {}
 countcell_list = []
 '''合计列下标数组'''
 
-savedata_json_filepath = "./save_data_for_test.json"
 savedata_dict = {}
 column_title_dic = {}
 
@@ -411,9 +410,9 @@ def create_detail(jsoninfo: ConfigureData, helper: XlsHelper):
       lineindex = lineindex + 1
 
 
-def read_savedata():
+def read_savedata(filePath):
   global savedata_dict
-  with open(savedata_json_filepath, 'rb') as f:
+  with open(filePath, 'rb') as f:
     jsondic = json.load(f)
     savedata_dict = jsondic
 
@@ -696,9 +695,11 @@ def init_analysis(jsoninfo: ConfigureData, month_sort_dic, dataItem_dic):
 if __name__ == "__main__":
   jsoninfo = get_jsondata(config_json_filepath)
   excel_savepath = jsoninfo.get_excelpath()
+  savedata_json_filepath = jsoninfo.get_savedata_json_filepath()
+
   helper = XlsHelper(jsoninfo, excel_savepath)
 
-  read_savedata()
+  read_savedata(savedata_json_filepath)
   create_detail(jsoninfo, helper)
 
   init_analysis(jsoninfo, month_lis_tuple_daydataItem_dic, row_daydataItem_dic)

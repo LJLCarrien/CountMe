@@ -115,6 +115,13 @@ class ConfigureData():
       return self.excelPath
     return None
 
+  def get_savedata_json_filepath(self) -> str:
+    '''获取'''
+    result = 'savedataJsonFilePath' in self.jsondic
+    if result:
+      return self.savedataJsonFilePath
+    return None
+
   def get_isfreezemonth(self) -> bool:
     '''冻结行模式是月份'''
     return self.freezeLineMode['type'] == 'month'

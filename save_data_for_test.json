@@ -9,6 +9,7 @@
             "nightsnack": "f",
             "snacksdrinks": "g",
             "takeoutfood": "h",
+            "ingredients": "h2",
             "countcell": 1
         },
         "dailyuse": {
