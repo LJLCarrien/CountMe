@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 /*.xlsx
 /output.txt
+/client/node_modules
+/client/project/package-lock.json
+/client/package-lock.json
