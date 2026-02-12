@@ -47,27 +47,41 @@
 
 <style scoped>
   .title {
-    color: #888;
-    font-size: 18px;
-    font-weight: initial;
+    color: #667eea;
+    font-size: 20px;
+    font-weight: 600;
     letter-spacing: .25px;
     margin-top: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
   }
 
   .items { margin-top: 8px; }
 
   .item {
     display: flex;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .item:hover {
+    background: #f0f2f7;
+    transform: translateX(4px);
   }
 
   .item .name {
     color: #6a6a6a;
-    margin-right: 6px;
+    margin-right: 12px;
+    font-weight: 500;
+    min-width: 100px;
   }
 
   .item .value {
-    color: #35495e;
-    font-weight: bold;
+    color: #667eea;
+    font-weight: 600;
   }
 </style>
