@@ -3,7 +3,9 @@
     <main>
       <div class="left-side">
         <system-information></system-information>
-        <div class="postData" @click="getAllData">测试</div>
+        <div class="postData" @click="getAllData">
+          <span>保存数据</span>
+        </div>
         <span> {{ titleInfo }}</span>
       </div>
 
@@ -28,7 +30,12 @@
             </div>
             <!-- 一级菜单内容描述 -->
             <div v-if="title.des != undefined" id="title_des">
-              <input id="title_des" v-model="title.des" />
+              <input 
+                v-if="title.name === 'date'" 
+                type="date" 
+                v-model="title.des" 
+              />
+              <input v-else id="title_des" v-model="title.des" />
             </div>
             <!-- 一级菜单合计 -->
             <div v-if="title.countcell != undefined" id="title_countcell">
@@ -55,9 +62,12 @@ export default {
     };
   },
   watch: {
-    // titleInfo: function () {
-    //   console.log(this.titleInfo);
-    // },
+    titleInfo: {
+      handler: function () {
+        this.updateWeekday();
+      },
+      deep: true,
+    },
   },
   beforeCreate() {
     console.log("beforecreate:");
@@ -75,16 +85,34 @@ export default {
 
     ipcRenderer.on("initTitle", (event, title, secTitles) => {
       this.titleInfo = this.handleTitle(title, secTitles);
+      this.$nextTick(() => {
+        this.updateWeekday();
+      });
     });
   },
   methods: {
+    updateWeekday: function () {
+      const dateItem = this.titleInfo.find(item => item.name === 'date');
+      const weekdayItem = this.titleInfo.find(item => item.name === 'weekday');
+      if (dateItem && weekdayItem && dateItem.des) {
+        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        weekdayItem.des = weekDays[new Date(dateItem.des).getDay()];
+      }
+    },
     getTitleObj: function (item, type) {
       let obj = new Object({
         name: item.name,
         showname: item.showname,
       });
       if (type == "des") {
-        obj["des"] = ""; //内容描述
+        if (item.name === "date") {
+          obj["des"] = new Date().toISOString().split('T')[0];
+        } else if (item.name === "weekday") {
+          const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+          obj["des"] = weekDays[new Date().getDay()];
+        } else {
+          obj["des"] = "";
+        }
       } else if (type == "countcell") {
         obj["countcell"] = 0; ///合计数值
       } else {
@@ -218,18 +246,15 @@ export default {
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 #wrapper {
-  background: radial-gradient(
-    ellipse at top left,
-    rgba(255, 255, 255, 1) 40%,
-    rgba(229, 229, 229, 0.9) 100%
-  );
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   height: 100vh;
-  padding: 60px 80px;
+  padding: 40px 60px;
   width: 100vw;
+  overflow: auto;
 }
 
 #logo {
@@ -241,6 +266,7 @@ body {
 main {
   display: flex;
   justify-content: space-between;
+  gap: 40px;
 }
 
 main > div {
@@ -250,26 +276,129 @@ main > div {
 .left-side {
   display: flex;
   flex-direction: column;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.right-side {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .title {
   color: #2c3e50;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  margin: 8px 0;
 }
+
 .sectitle {
-  margin-left: 20px;
-  margin-top: 6px;
+  margin-left: 24px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
 }
 
 .postData {
-  width: 150px;
-  height: 30px;
-  line-height: 30px;
+  width: 180px;
+  height: 44px;
+  line-height: 44px;
   text-align: center;
-  border: 1px solid #ccc;
-  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 22px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.postData:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.postData:active {
+  transform: translateY(0);
+}
+
+#title_des input,
+#sectitle_des,
+.title_countcell input {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 6px;
+  border: 2px solid #e1e5eb;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+#title_des input:focus,
+#sectitle_des:focus,
+.title_countcell input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+input[type="number"] {
+  width: 120px;
+  padding: 8px 12px;
+  border: 2px solid #e1e5eb;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input[type="number"]:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#title_des,
+.title_countcell {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.right-side > div {
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.right-side::-webkit-scrollbar {
+  width: 8px;
+}
+
+.right-side::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.right-side::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.right-side::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
 }
 </style>
